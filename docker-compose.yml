@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Auth, Inventory, Order, Payment services
+  postgres:
+    image: postgres:16-alpine
+    container_name: green-mart-postgres
+    environment:
+      POSTGRES_USER: greenmart
+      POSTGRES_PASSWORD: greenmart123
+      POSTGRES_DB: greenmart
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-scripts/postgres:/docker-entrypoint-initdb.d
+    networks:
+      - green-mart-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U greenmart"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB for User and Product services
+  mongodb:
+    image: mongo:7.0
+    container_name: green-mart-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: greenmart
+      MONGO_INITDB_ROOT_PASSWORD: greenmart123
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/init-scripts/mongo:/docker-entrypoint-initdb.d
+    networks:
+      - green-mart-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # pgAdmin for PostgreSQL management (optional - development)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: green-mart-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@greenmart.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - green-mart-network
+
+  # Mongo Express for MongoDB management (optional - development)
+  mongo-express:
+    image: mongo-express:latest
+    container_name: green-mart-mongo-express
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: greenmart
+      ME_CONFIG_MONGODB_ADMINPASSWORD: greenmart123
+      ME_CONFIG_MONGODB_URL: mongodb://greenmart:greenmart123@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongodb
+    networks:
+      - green-mart-network
+
+  # Eureka Service Discovery Server
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: green-mart-eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - green-mart-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: green-mart-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - green-mart-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  postgres_data:
+  mongodb_data:
+
+networks:
+  green-mart-network:
+    driver: bridge

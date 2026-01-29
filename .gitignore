@@ -1,0 +1,41 @@
+# Embedded repositories
+backend-product-service/
+
+# Build outputs
+target/
+build/
+*.jar
+*.war
+*.class
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+
+# Maven
+.mvn/repository/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+*.env
+
+# Node modules (if any frontend)
+node_modules/
+
+# Docker volumes (local)
+docker/data/
