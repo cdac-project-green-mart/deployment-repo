@@ -136,6 +136,32 @@ services:
       timeout: 10s
       retries: 5
 
+  # User Service (Node.js)
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: green-mart-user
+    ports:
+      - "8083:8083"
+    environment:
+      - PORT=8083
+      - MONGODB_URI=mongodb://greenmart:greenmart123@mongodb:27017/user_service?authSource=admin
+      - EUREKA_HOST=eureka-server
+      - EUREKA_PORT=8761
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - green-mart-network
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8083/actuator/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 volumes:
   postgres_data:
   mongodb_data:
