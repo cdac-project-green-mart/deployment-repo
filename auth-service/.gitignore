@@ -1,0 +1,32 @@
+# Build output
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+*.factorypath
+
+# Maven
+.mvn/repository/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+
+# Application properties with secrets
+application-local.yml
+application-prod.yml
