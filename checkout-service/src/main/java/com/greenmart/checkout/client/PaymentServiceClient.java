@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.math.BigDecimal;
 import java.util.Map;
 
-@Component
+@Component("paymentClient")
 @Slf4j
 public class PaymentServiceClient {
 

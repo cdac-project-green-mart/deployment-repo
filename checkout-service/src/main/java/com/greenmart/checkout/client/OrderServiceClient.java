@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.Map;
 
-@Component
+@Component("orderClient")
 @Slf4j
 public class OrderServiceClient {
 

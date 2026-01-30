@@ -1,12 +1,7 @@
 -- Payment Service Database Initialization
-
--- Create payment_service database
-CREATE DATABASE IF NOT EXISTS payment_service;
-
--- Grant privileges
-GRANT ALL PRIVILEGES ON DATABASE payment_service TO greenmart;
+-- Database already created in 01-init.sql
 
 \c payment_service;
 
 -- Tables will be created automatically by Hibernate/JPA
--- This script just ensures the database exists
+-- This script just ensures connection to the database

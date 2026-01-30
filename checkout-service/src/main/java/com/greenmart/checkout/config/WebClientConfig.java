@@ -3,6 +3,7 @@ package com.greenmart.checkout.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
@@ -12,14 +13,19 @@ import java.time.Duration;
 @Configuration
 public class WebClientConfig {
 
-    @Value("${webclient.timeout.connect:5000}")
-    private int connectTimeout;
-
     @Value("${webclient.timeout.read:10000}")
     private int readTimeout;
 
-    @Bean
-    public WebClient.Builder webClientBuilder() {
+    @Value("${service.order.url}")
+    private String orderServiceUrl;
+
+    @Value("${service.inventory.url}")
+    private String inventoryServiceUrl;
+
+    @Value("${service.payment.url}")
+    private String paymentServiceUrl;
+
+    private WebClient.Builder createBaseBuilder() {
         HttpClient httpClient = HttpClient.create()
                 .responseTimeout(Duration.ofMillis(readTimeout));
 
@@ -28,23 +34,17 @@ public class WebClientConfig {
     }
 
     @Bean
-    public WebClient orderServiceClient(
-            WebClient.Builder builder,
-            @Value("${service.order.url}") String orderServiceUrl) {
-        return builder.baseUrl(orderServiceUrl).build();
+    public WebClient orderServiceClient() {
+        return createBaseBuilder().baseUrl(orderServiceUrl).build();
     }
 
     @Bean
-    public WebClient inventoryServiceClient(
-            WebClient.Builder builder,
-            @Value("${service.inventory.url}") String inventoryServiceUrl) {
-        return builder.baseUrl(inventoryServiceUrl).build();
+    public WebClient inventoryServiceClient() {
+        return createBaseBuilder().baseUrl(inventoryServiceUrl).build();
     }
 
     @Bean
-    public WebClient paymentServiceClient(
-            WebClient.Builder builder,
-            @Value("${service.payment.url}") String paymentServiceUrl) {
-        return builder.baseUrl(paymentServiceUrl).build();
+    public WebClient paymentServiceClient() {
+        return createBaseBuilder().baseUrl(paymentServiceUrl).build();
     }
 }

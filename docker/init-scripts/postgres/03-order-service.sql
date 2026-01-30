@@ -1,12 +1,7 @@
 -- Order Service Database Initialization
-
--- Create order_service database
-CREATE DATABASE IF NOT EXISTS order_service;
-
--- Grant privileges
-GRANT ALL PRIVILEGES ON DATABASE order_service TO greenmart;
+-- Database already created in 01-init.sql
 
 \c order_service;
 
 -- Tables will be created automatically by Hibernate/JPA
--- This script just ensures the database exists
+-- This script just ensures connection to the database

@@ -1,28 +1,28 @@
 # Checkout Service Dockerfile
-FROM eclipse-temurin:17-jdk-alpine AS build
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom.xml
-COPY mvnw .
-COPY .mvn .mvn
+# Copy pom.xml and download dependencies
 COPY pom.xml .
-
-# Make mvnw executable
-RUN chmod +x ./mvnw
-
-# Download dependencies
-RUN ./mvnw dependency:go-offline
+RUN mvn dependency:go-offline -B
 
 # Copy source code
 COPY src src
 
 # Build the application
-RUN ./mvnw package -DskipTests
+RUN mvn package -DskipTests
 
-# --- Production Stage ---
+# Production stage
 FROM eclipse-temurin:17-jre-alpine
+
 WORKDIR /app
+
+# Copy the built jar
 COPY --from=build /app/target/*.jar app.jar
+
+# Expose port
 EXPOSE 8088
+
+# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]
