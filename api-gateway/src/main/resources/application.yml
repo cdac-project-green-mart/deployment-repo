@@ -20,7 +20,7 @@ spring:
       
       # Route definitions
       routes:
-        # Auth Service Routes
+        # Auth Service Routes (PUBLIC - no authentication required)
         - id: auth-service
           uri: lb://AUTH-SERVICE
           predicates:
@@ -28,52 +28,67 @@ spring:
           filters:
             - RewritePath=/api/auth/(?<segment>.*), /api/auth/${segment}
         
-        # User Service Routes
+        # Product Service Routes (PUBLIC - GET requests, authenticated for others)
+        - id: product-service-public
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/products/**
+            - Method=GET
+          filters:
+            - RewritePath=/api/products/(?<segment>.*), /api/products/${segment}
+        
+        - id: product-service-protected
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/products/**
+            - Method=POST,PUT,DELETE,PATCH
+          filters:
+            - JwtAuthenticationFilter
+            - RewritePath=/api/products/(?<segment>.*), /api/products/${segment}
+        
+        # User Service Routes (PROTECTED)
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
             - Path=/api/users/**
           filters:
+            - JwtAuthenticationFilter
             - RewritePath=/api/users/(?<segment>.*), /api/users/${segment}
         
-        # Product Service Routes
-        - id: product-service
-          uri: lb://PRODUCT-SERVICE
-          predicates:
-            - Path=/api/products/**
-          filters:
-            - RewritePath=/api/products/(?<segment>.*), /api/products/${segment}
-        
-        # Inventory Service Routes
+        # Inventory Service Routes (PROTECTED - internal mostly, but expose for admin)
         - id: inventory-service
           uri: lb://INVENTORY-SERVICE
           predicates:
             - Path=/api/inventory/**
           filters:
+            - JwtAuthenticationFilter
             - RewritePath=/api/inventory/(?<segment>.*), /api/inventory/${segment}
         
-        # Order Service Routes
+        # Order Service Routes (PROTECTED)
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/api/orders/**
           filters:
+            - JwtAuthenticationFilter
             - RewritePath=/api/orders/(?<segment>.*), /api/orders/${segment}
         
-        # Checkout Service Routes
+        # Checkout Service Routes (PROTECTED)
         - id: checkout-service
           uri: lb://CHECKOUT-SERVICE
           predicates:
             - Path=/api/checkout/**
           filters:
+            - JwtAuthenticationFilter
             - RewritePath=/api/checkout/(?<segment>.*), /api/checkout/${segment}
         
-        # Payment Service Routes
+        # Payment Service Routes (PROTECTED)
         - id: payment-service
           uri: lb://PAYMENT-SERVICE
           predicates:
             - Path=/api/payments/**
           filters:
+            - JwtAuthenticationFilter
             - RewritePath=/api/payments/(?<segment>.*), /api/payments/${segment}
       
       # Global CORS Configuration
@@ -95,11 +110,15 @@ spring:
             allowCredentials: true
             maxAge: 3600
 
+# JWT Configuration (same secret as auth-service)
+jwt:
+  secret: ${JWT_SECRET:YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY3ODkwYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo=}
+
 # Eureka Client Configuration
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
     fetch-registry: true
     register-with-eureka: true
   instance:
@@ -135,4 +154,5 @@ resilience4j:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+    com.greenmart.gateway: DEBUG
     reactor.netty: INFO
