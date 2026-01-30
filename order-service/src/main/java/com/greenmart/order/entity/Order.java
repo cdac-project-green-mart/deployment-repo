@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreatedDate;
-import org.hibernate.annotations.UpdatedTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -40,11 +38,9 @@ public class Order {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private ShippingAddress shippingAddress;
 
-    @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @UpdatedTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
@@ -54,6 +50,17 @@ public class Order {
         SHIPPED,
         DELIVERED,
         CANCELLED
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 
     // Helper method to add item
