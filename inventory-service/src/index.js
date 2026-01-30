@@ -9,7 +9,7 @@ const inventoryRoutes = require('./routes/inventoryRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
-const PORT = process.env.PORT || 8085;
+const PORT = process.env.PORT || 8086;
 
 // Middleware
 app.use(helmet());

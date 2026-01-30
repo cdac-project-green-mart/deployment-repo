@@ -195,14 +195,42 @@ services:
       dockerfile: Dockerfile
     container_name: green-mart-inventory
     ports:
-      - "8085:8085"
+      - "8086:8086"
     environment:
-      - PORT=8085
+      - PORT=8086
       - MONGODB_URI=mongodb://greenmart:greenmart123@mongodb:27017/inventory_service?authSource=admin
       - EUREKA_HOST=eureka-server
       - EUREKA_PORT=8761
     depends_on:
       mongodb:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    networks:
+      - green-mart-network
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8086/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Order Service (Spring Boot)
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: green-mart-order
+    ports:
+      - "8085:8085"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=order_service
+      - DB_USER=greenmart
+      - DB_PASSWORD=greenmart123
+      - EUREKA_SERVER=http://eureka-server:8761/eureka/
+    depends_on:
+      postgres:
         condition: service_healthy
       eureka-server:
         condition: service_healthy
