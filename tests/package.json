@@ -1,0 +1,13 @@
+{
+    "name": "green-mart-integration-tests",
+    "version": "1.0.0",
+    "description": "Integration and E2E tests for Green Mart microservices",
+    "main": "integration-tests.js",
+    "scripts": {
+        "test": "node integration-tests.js",
+        "test:verbose": "node integration-tests.js --verbose"
+    },
+    "dependencies": {
+        "axios": "^1.6.0"
+    }
+}

@@ -1,0 +1,311 @@
+[
+    {
+        "userId": "user_001_customer",
+        "phone": "+1-555-0101",
+        "addresses": [
+            {
+                "street": "123 Main Street",
+                "city": "New York",
+                "state": "NY",
+                "zip": "10001",
+                "country": "USA",
+                "isDefault": true
+            },
+            {
+                "street": "456 Park Avenue",
+                "city": "New York",
+                "state": "NY",
+                "zip": "10022",
+                "country": "USA",
+                "isDefault": false
+            }
+        ],
+        "preferences": {
+            "newsletter": true,
+            "theme": "dark"
+        }
+    },
+    {
+        "userId": "user_002_vendor",
+        "phone": "+1-555-0202",
+        "addresses": [
+            {
+                "street": "789 Business Blvd",
+                "city": "Los Angeles",
+                "state": "CA",
+                "zip": "90001",
+                "country": "USA",
+                "isDefault": true
+            }
+        ],
+        "preferences": {
+            "newsletter": false,
+            "theme": "light"
+        }
+    },
+    {
+        "userId": "user_003_admin",
+        "phone": "+1-555-0303",
+        "addresses": [
+            {
+                "street": "321 Admin Lane",
+                "city": "Chicago",
+                "state": "IL",
+                "zip": "60601",
+                "country": "USA",
+                "isDefault": true
+            }
+        ],
+        "preferences": {
+            "newsletter": true,
+            "theme": "dark"
+        }
+    },
+    {
+        "userId": "user_004_customer",
+        "phone": "+44-20-7946-0958",
+        "addresses": [
+            {
+                "street": "10 Downing Street",
+                "city": "London",
+                "state": "England",
+                "zip": "SW1A 2AA",
+                "country": "UK",
+                "isDefault": true
+            },
+            {
+                "street": "221B Baker Street",
+                "city": "London",
+                "state": "England",
+                "zip": "NW1 6XE",
+                "country": "UK",
+                "isDefault": false
+            },
+            {
+                "street": "Platform 9 3/4, King's Cross",
+                "city": "London",
+                "state": "England",
+                "zip": "N1 9AP",
+                "country": "UK",
+                "isDefault": false
+            }
+        ],
+        "preferences": {
+            "newsletter": true,
+            "theme": "light"
+        }
+    },
+    {
+        "userId": "user_005_customer",
+        "phone": "+91-22-1234-5678",
+        "addresses": [
+            {
+                "street": "MG Road, Connaught Place",
+                "city": "Mumbai",
+                "state": "Maharashtra",
+                "zip": "400001",
+                "country": "India",
+                "isDefault": true
+            }
+        ],
+        "preferences": {
+            "newsletter": false,
+            "theme": "dark"
+        }
+    },
+    {
+        "userId": "user_006_vendor",
+        "phone": "+1-555-0606",
+        "addresses": [
+            {
+                "street": "555 Tech Drive",
+                "city": "San Francisco",
+                "state": "CA",
+                "zip": "94102",
+                "country": "USA",
+                "isDefault": true
+            },
+            {
+                "street": "777 Innovation Way",
+                "city": "Palo Alto",
+                "state": "CA",
+                "zip": "94301",
+                "country": "USA",
+                "isDefault": false
+            }
+        ],
+        "preferences": {
+            "newsletter": true,
+            "theme": "light"
+        }
+    },
+    {
+        "userId": "user_007_customer",
+        "phone": null,
+        "addresses": [],
+        "preferences": {
+            "newsletter": true,
+            "theme": "light"
+        }
+    },
+    {
+        "userId": "user_008_customer",
+        "phone": "+61-2-9876-5432",
+        "addresses": [
+            {
+                "street": "42 Wallaby Way",
+                "city": "Sydney",
+                "state": "NSW",
+                "zip": "2000",
+                "country": "Australia",
+                "isDefault": true
+            }
+        ],
+        "preferences": {
+            "newsletter": false,
+            "theme": "dark"
+        }
+    },
+    {
+        "userId": "user_009_vendor",
+        "phone": "+49-30-1234-5678",
+        "addresses": [
+            {
+                "street": "Unter den Linden 77",
+                "city": "Berlin",
+                "state": "Berlin",
+                "zip": "10117",
+                "country": "Germany",
+                "isDefault": true
+            }
+        ],
+        "preferences": {
+            "newsletter": true,
+            "theme": "light"
+        }
+    },
+    {
+        "userId": "user_010_customer",
+        "phone": "+33-1-4567-8901",
+        "addresses": [
+            {
+                "street": "Champs-Élysées 100",
+                "city": "Paris",
+                "state": "Île-de-France",
+                "zip": "75008",
+                "country": "France",
+                "isDefault": false
+            },
+            {
+                "street": "Rue de Rivoli 50",
+                "city": "Paris",
+                "state": "Île-de-France",
+                "zip": "75001",
+                "country": "France",
+                "isDefault": true
+            }
+        ],
+        "preferences": {
+            "newsletter": true,
+            "theme": "dark"
+        }
+    },
+    {
+        "userId": "user_011_customer",
+        "phone": "+81-3-1234-5678",
+        "addresses": [
+            {
+                "street": "1-1-1 Shibuya",
+                "city": "Tokyo",
+                "state": "Tokyo",
+                "zip": "150-0002",
+                "country": "Japan",
+                "isDefault": true
+            }
+        ],
+        "preferences": {
+            "newsletter": false,
+            "theme": "light"
+        }
+    },
+    {
+        "userId": "user_012_vendor",
+        "phone": "+1-555-1212",
+        "addresses": [
+            {
+                "street": "1600 Pennsylvania Avenue NW",
+                "city": "Washington",
+                "state": "DC",
+                "zip": "20500",
+                "country": "USA",
+                "isDefault": true
+            }
+        ],
+        "preferences": {
+            "newsletter": true,
+            "theme": "dark"
+        }
+    },
+    {
+        "userId": "user_013_customer",
+        "phone": "+55-11-9876-5432",
+        "addresses": [
+            {
+                "street": "Avenida Paulista 1000",
+                "city": "São Paulo",
+                "state": "SP",
+                "zip": "01310-100",
+                "country": "Brazil",
+                "isDefault": true
+            }
+        ],
+        "preferences": {
+            "newsletter": true,
+            "theme": "light"
+        }
+    },
+    {
+        "userId": "user_014_customer",
+        "phone": "+86-10-1234-5678",
+        "addresses": [
+            {
+                "street": "Wangfujing Street 138",
+                "city": "Beijing",
+                "state": "Beijing",
+                "zip": "100006",
+                "country": "China",
+                "isDefault": true
+            },
+            {
+                "street": "Nanjing Road 200",
+                "city": "Shanghai",
+                "state": "Shanghai",
+                "zip": "200001",
+                "country": "China",
+                "isDefault": false
+            }
+        ],
+        "preferences": {
+            "newsletter": false,
+            "theme": "dark"
+        }
+    },
+    {
+        "userId": "user_015_vendor",
+        "phone": "+1-555-1515",
+        "addresses": [
+            {
+                "street": "1 Infinite Loop",
+                "city": "Cupertino",
+                "state": "CA",
+                "zip": "95014",
+                "country": "USA",
+                "isDefault": true
+            }
+        ],
+        "preferences": {
+            "newsletter": true,
+            "theme": "dark"
+        }
+    }
+]
