@@ -1,0 +1,793 @@
+{
+    "info": {
+        "_postman_id": "product-service-testing-2026",
+        "name": "Product Service - Green Mart",
+        "description": "Complete test collection for Product Service with 23 test cases covering all endpoints, RBAC, pagination, filtering, search, and error scenarios.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Checks",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Actuator Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/actuator/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "actuator",
+                                "health"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Public Product Browsing",
+            "item": [
+                {
+                    "name": "Get All Products",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
+                                    "    pm.environment.set(\"product_id\", jsonData.data[0].id);",
+                                    "    console.log(\"Product ID saved: \" + jsonData.data[0].id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/products",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Products with Pagination",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/products?page=1&limit=5",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "5"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Filter by Category",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/products?category=Fruits",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ],
+                            "query": [
+                                {
+                                    "key": "category",
+                                    "value": "Fruits"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Filter by Price Range",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/products?minPrice=5&maxPrice=10",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ],
+                            "query": [
+                                {
+                                    "key": "minPrice",
+                                    "value": "5"
+                                },
+                                {
+                                    "key": "maxPrice",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Text Search",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/products?search=organic",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "organic"
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get All Categories",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/products/categories",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "categories"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Product by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/products/{{product_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "{{product_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Product by Invalid ID (Error)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/products/invalid_id",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "invalid_id"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Product Not Found (Error)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/products/507f1f77bcf86cd799439011",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "507f1f77bcf86cd799439011"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Product CRUD Operations",
+            "item": [
+                {
+                    "name": "Create Product - Vendor",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.success && jsonData.data && jsonData.data.id) {",
+                                    "    pm.environment.set(\"vendor_product_id\", jsonData.data.id);",
+                                    "    console.log(\"Vendor Product ID saved: \" + jsonData.data.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "{{vendor_user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "x-user-role",
+                                "value": "{{vendor_role}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test Product\",\n  \"description\": \"This is a test product for Postman testing\",\n  \"price\": 9.99,\n  \"category\": \"Test\",\n  \"images\": [\n    \"https://via.placeholder.com/300\"\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Product - Admin",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "{{admin_user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "x-user-role",
+                                "value": "{{admin_role}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Admin Test Product\",\n  \"description\": \"Product created by admin\",\n  \"price\": 19.99,\n  \"category\": \"Test\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Vendor's Products",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "{{vendor_user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/products/vendor/me",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "vendor",
+                                "me"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Product - Vendor (Own Product)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "{{vendor_user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "x-user-role",
+                                "value": "{{vendor_role}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Test Product\",\n  \"price\": 12.99\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products/{{vendor_product_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "{{vendor_product_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Product - Admin (Any Product)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "{{admin_user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "x-user-role",
+                                "value": "{{admin_role}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"price\": 5.99\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products/{{product_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "{{product_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Product - Vendor (Own Product)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "{{vendor_user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "x-user-role",
+                                "value": "{{vendor_role}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/products/{{vendor_product_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "{{vendor_product_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Authorization & Error Tests",
+            "item": [
+                {
+                    "name": "Create Product - Missing Auth (Error)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test Product\",\n  \"description\": \"Test\",\n  \"price\": 9.99,\n  \"category\": \"Test\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Product - Customer Role (Error)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "{{customer_user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "x-user-role",
+                                "value": "{{customer_role}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test Product\",\n  \"description\": \"Test\",\n  \"price\": 9.99,\n  \"category\": \"Test\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Create Product - Validation Error",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "{{vendor_user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "x-user-role",
+                                "value": "{{vendor_role}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"\",\n  \"price\": -5\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Update Product - Vendor (Other's Product - Error)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "user_015_vendor",
+                                "type": "text"
+                            },
+                            {
+                                "key": "x-user-role",
+                                "value": "VENDOR",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"price\": 99.99\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/products/{{product_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "{{product_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Product - Vendor (Other's Product - Error)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "user_015_vendor",
+                                "type": "text"
+                            },
+                            {
+                                "key": "x-user-role",
+                                "value": "VENDOR",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/products/{{product_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "{{product_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Delete Product - Customer Role (Error)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "x-user-id",
+                                "value": "{{customer_user_id}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "x-user-role",
+                                "value": "{{customer_role}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/products/{{product_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "products",
+                                "{{product_id}}"
+                            ]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8084",
+            "type": "string"
+        },
+        {
+            "key": "vendor_user_id",
+            "value": "user_002_vendor",
+            "type": "string"
+        },
+        {
+            "key": "vendor_role",
+            "value": "VENDOR",
+            "type": "string"
+        },
+        {
+            "key": "admin_user_id",
+            "value": "user_003_admin",
+            "type": "string"
+        },
+        {
+            "key": "admin_role",
+            "value": "ADMIN",
+            "type": "string"
+        },
+        {
+            "key": "customer_user_id",
+            "value": "user_001_customer",
+            "type": "string"
+        },
+        {
+            "key": "customer_role",
+            "value": "CUSTOMER",
+            "type": "string"
+        },
+        {
+            "key": "product_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "vendor_product_id",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
