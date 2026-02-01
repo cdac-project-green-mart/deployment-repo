@@ -39,3 +39,6 @@ node_modules/
 
 # Docker volumes (local)
 docker/data/
+
+# Backups (should not be committed)
+backups/

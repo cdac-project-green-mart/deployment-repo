@@ -1,0 +1,50 @@
+version: '3.8'
+
+# ===========================================
+# GREEN MART - Test Environment
+# ===========================================
+# Isolated test environment for integration tests
+# Usage: docker compose -f tests/docker-compose.test.yml up -d
+# ===========================================
+
+services:
+  # Test PostgreSQL (different port to avoid conflicts)
+  postgres-test:
+    image: postgres:16-alpine
+    container_name: green-mart-postgres-test
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test123
+      POSTGRES_DB: test
+    ports:
+      - "5433:5432"
+    volumes:
+      - ../docker/init-scripts/postgres:/docker-entrypoint-initdb.d
+    networks:
+      - test-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U test" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Test MongoDB (different port to avoid conflicts)
+  mongodb-test:
+    image: mongo:7.0
+    container_name: green-mart-mongodb-test
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: test123
+    ports:
+      - "27018:27017"
+    networks:
+      - test-network
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+networks:
+  test-network:
+    driver: bridge

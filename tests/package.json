@@ -5,7 +5,8 @@
     "main": "integration-tests.js",
     "scripts": {
         "test": "node integration-tests.js",
-        "test:verbose": "node integration-tests.js --verbose"
+        "test:verbose": "node integration-tests.js --verbose",
+        "seed": "node seed-data.js"
     },
     "dependencies": {
         "axios": "^1.6.0"
