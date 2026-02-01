@@ -346,3 +346,6 @@ curl http://localhost:8086/api/inventory/prod_001_apples
 - Payment may fail (10% mock failure rate)
 - Cart is cleared after successful checkout
 - Inventory is reserved then confirmed on success
+
+
+### Working as expected. All postman route tests passed.
