@@ -1,0 +1,808 @@
+{
+    "info": {
+        "_postman_id": "order-service-testing-2026",
+        "name": "Order Service - Green Mart",
+        "description": "Complete test collection for Order Service with 27 test cases covering cart management, order operations, internal endpoints, and error scenarios.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Checks",
+            "item": [
+                {
+                    "name": "Actuator Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/actuator/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "actuator",
+                                "health"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Cart Operations",
+            "item": [
+                {
+                    "name": "Get Cart (Existing User)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_with_cart}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Cart (New User - Auto Create)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Item to Cart",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"productId\": \"prod_005_salmon\",\n  \"name\": \"Fresh Salmon Fillet\",\n  \"price\": 18.99,\n  \"quantity\": 2\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart/add",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "add"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Same Item Again (Quantity Update)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"productId\": \"prod_005_salmon\",\n  \"name\": \"Fresh Salmon Fillet\",\n  \"price\": 18.99,\n  \"quantity\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart/add",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "add"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Different Item",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"productId\": \"prod_001_apples\",\n  \"name\": \"Organic Apples\",\n  \"price\": 4.99,\n  \"quantity\": 2\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart/add",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "add"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Cart Item Quantity",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart/update?productId=prod_005_salmon&quantity=5",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "update"
+                            ],
+                            "query": [
+                                {
+                                    "key": "productId",
+                                    "value": "prod_005_salmon"
+                                },
+                                {
+                                    "key": "quantity",
+                                    "value": "5"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Remove Item from Cart",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart/remove?productId=prod_001_apples",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "remove"
+                            ],
+                            "query": [
+                                {
+                                    "key": "productId",
+                                    "value": "prod_001_apples"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Clear Cart",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart/clear",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "clear"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Prepare Cart for Order Test",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"productId\": \"prod_007_beef\",\n  \"name\": \"Grass-Fed Beef\",\n  \"price\": 24.99,\n  \"quantity\": 2\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart/add",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "add"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Order Operations",
+            "item": [
+                {
+                    "name": "Get User Orders",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_with_orders}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Order by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_001"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/{{order_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "{{order_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Orders - New User (Empty List)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_no_orders"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get User 002 Orders",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_002"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Internal Endpoints",
+            "item": [
+                {
+                    "name": "Create Order from Cart",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.success && jsonData.data && jsonData.data.id) {",
+                                    "    pm.environment.set(\"created_order_id\", jsonData.data.id);",
+                                    "    console.log(\"Created Order ID saved: \" + jsonData.data.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"street\": \"100 Test Street\",\n  \"city\": \"Test City\",\n  \"zip\": \"12345\",\n  \"country\": \"USA\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/internal/create",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "internal",
+                                "create"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Created Order",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/{{created_order_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "{{created_order_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Order Status - Confirm",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"CONFIRMED\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/internal/{{created_order_id}}/status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "internal",
+                                "{{created_order_id}}",
+                                "status"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Order Status - Ship",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"SHIPPED\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/internal/{{created_order_id}}/status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "internal",
+                                "{{created_order_id}}",
+                                "status"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Order Status - Deliver",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"DELIVERED\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/internal/{{created_order_id}}/status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "internal",
+                                "{{created_order_id}}",
+                                "status"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Pending Order - Cancel",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"CANCELLED\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/internal/{{pending_order_id}}/status",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "internal",
+                                "{{pending_order_id}}",
+                                "status"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Error Scenarios",
+            "item": [
+                {
+                    "name": "Get Cart - Missing Header",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Item - Validation Error",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_new}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"productId\": \"\",\n  \"name\": \"\",\n  \"price\": -5,\n  \"quantity\": 0\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart/add",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "add"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Order - Wrong User (Unauthorized)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_999"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/{{order_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "{{order_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Order - Not Found",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_001"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/00000000-0000-0000-0000-000000000000",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "00000000-0000-0000-0000-000000000000"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Order - Empty Cart",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_003"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"street\": \"Test Street\",\n  \"city\": \"Test City\",\n  \"zip\": \"12345\",\n  \"country\": \"USA\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/internal/create",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "internal",
+                                "create"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Item - Cart Not Found",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_no_cart_999"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/orders/cart/update?productId=prod_001&quantity=5",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "update"
+                            ],
+                            "query": [
+                                {
+                                    "key": "productId",
+                                    "value": "prod_001"
+                                },
+                                {
+                                    "key": "quantity",
+                                    "value": "5"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8085",
+            "type": "string"
+        },
+        {
+            "key": "user_id_with_cart",
+            "value": "user_001",
+            "type": "string"
+        },
+        {
+            "key": "user_id_with_orders",
+            "value": "user_001",
+            "type": "string"
+        },
+        {
+            "key": "user_id_new",
+            "value": "user_test_new",
+            "type": "string"
+        },
+        {
+            "key": "order_id",
+            "value": "770e8400-e29b-41d4-a716-446655440001",
+            "type": "string"
+        },
+        {
+            "key": "pending_order_id",
+            "value": "770e8400-e29b-41d4-a716-446655440004",
+            "type": "string"
+        },
+        {
+            "key": "created_order_id",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}

@@ -1,0 +1,518 @@
+{
+    "info": {
+        "_postman_id": "checkout-service-testing-2026",
+        "name": "Checkout Service - Green Mart",
+        "description": "Complete test collection for Checkout Service with 15 test cases covering SAGA checkout workflow, error scenarios, and validation.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Checks",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/checkout/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "checkout",
+                                "health"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Actuator Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/actuator/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "actuator",
+                                "health"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Setup (Run First)",
+            "item": [
+                {
+                    "name": "Add Item to Cart for Checkout",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"productId\": \"prod_001_apples\",\n  \"name\": \"Organic Apples\",\n  \"price\": 4.99,\n  \"quantity\": 2\n}"
+                        },
+                        "url": {
+                            "raw": "{{order_service_url}}/api/orders/cart/add",
+                            "host": [
+                                "{{order_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "add"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Second Item to Cart",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"productId\": \"prod_003_milk\",\n  \"name\": \"Organic Milk\",\n  \"price\": 5.99,\n  \"quantity\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{order_service_url}}/api/orders/cart/add",
+                            "host": [
+                                "{{order_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart",
+                                "add"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Verify Cart",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{order_service_url}}/api/orders/cart",
+                            "host": [
+                                "{{order_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Successful Checkout",
+            "item": [
+                {
+                    "name": "Checkout - Credit Card",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.success && jsonData.orderId) {",
+                                    "    pm.environment.set('created_order_id', jsonData.orderId);",
+                                    "    pm.environment.set('created_transaction_id', jsonData.transactionId);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"shippingAddress\": {\n    \"street\": \"123 Test Street\",\n    \"city\": \"Test City\",\n    \"zip\": \"12345\",\n    \"country\": \"USA\"\n  },\n  \"paymentMethod\": \"CREDIT_CARD\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/checkout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "checkout"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Checkout - UPI",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"shippingAddress\": {\n    \"street\": \"456 Test Avenue\",\n    \"city\": \"Another City\",\n    \"zip\": \"67890\",\n    \"country\": \"USA\"\n  },\n  \"paymentMethod\": \"UPI\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/checkout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "checkout"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Checkout - Debit Card",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"shippingAddress\": {\n    \"street\": \"789 Another St\",\n    \"city\": \"Some City\",\n    \"zip\": \"11111\",\n    \"country\": \"USA\"\n  },\n  \"paymentMethod\": \"DEBIT_CARD\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/checkout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "checkout"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Verification",
+            "item": [
+                {
+                    "name": "Verify Order Created",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{order_service_url}}/api/orders/{{created_order_id}}",
+                            "host": [
+                                "{{order_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "{{created_order_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Verify Transaction Created",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{payment_service_url}}/api/payments/{{created_transaction_id}}",
+                            "host": [
+                                "{{payment_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments",
+                                "{{created_transaction_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Verify Cart Cleared",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{order_service_url}}/api/orders/cart",
+                            "host": [
+                                "{{order_service_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "orders",
+                                "cart"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Error Scenarios",
+            "item": [
+                {
+                    "name": "Checkout - Empty Cart",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_empty_cart"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"shippingAddress\": {\n    \"street\": \"123 Test St\",\n    \"city\": \"Test City\",\n    \"zip\": \"12345\",\n    \"country\": \"USA\"\n  },\n  \"paymentMethod\": \"CREDIT_CARD\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/checkout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "checkout"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Checkout - Missing Shipping Address",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"paymentMethod\": \"CREDIT_CARD\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/checkout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "checkout"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Checkout - Missing Payment Method",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"shippingAddress\": {\n    \"street\": \"123 Test St\",\n    \"city\": \"Test City\",\n    \"zip\": \"12345\",\n    \"country\": \"USA\"\n  }\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/checkout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "checkout"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Checkout - Incomplete Address",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"shippingAddress\": {\n    \"street\": \"123 Test St\"\n  },\n  \"paymentMethod\": \"CREDIT_CARD\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/checkout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "checkout"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Checkout - Empty Body",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_test}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/checkout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "checkout"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8088",
+            "type": "string"
+        },
+        {
+            "key": "order_service_url",
+            "value": "http://localhost:8085",
+            "type": "string"
+        },
+        {
+            "key": "payment_service_url",
+            "value": "http://localhost:8087",
+            "type": "string"
+        },
+        {
+            "key": "inventory_service_url",
+            "value": "http://localhost:8086",
+            "type": "string"
+        },
+        {
+            "key": "user_id_test",
+            "value": "user_checkout_test",
+            "type": "string"
+        },
+        {
+            "key": "created_order_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "created_transaction_id",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}

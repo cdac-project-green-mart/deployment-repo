@@ -1,0 +1,531 @@
+{
+    "info": {
+        "_postman_id": "payment-service-testing-2026",
+        "name": "Payment Service - Green Mart",
+        "description": "Complete test collection for Payment Service with 20 test cases covering payment processing, transaction history, refunds, and error scenarios.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Checks",
+            "item": [
+                {
+                    "name": "Actuator Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/actuator/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "actuator",
+                                "health"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Payment Processing",
+            "item": [
+                {
+                    "name": "Process Payment - Credit Card",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.success && jsonData.data && jsonData.data.id) {",
+                                    "    pm.environment.set('created_transaction_id', jsonData.data.id);",
+                                    "    console.log('Transaction ID saved: ' + jsonData.data.id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"orderId\": \"test_order_001\",\n  \"userId\": \"user_test\",\n  \"amount\": 99.99,\n  \"currency\": \"USD\",\n  \"paymentMethod\": \"CREDIT_CARD\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/payments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Process Payment - UPI",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"orderId\": \"test_order_002\",\n  \"userId\": \"user_test\",\n  \"amount\": 50.00,\n  \"paymentMethod\": \"UPI\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/payments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Process Payment - Debit Card",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"orderId\": \"test_order_003\",\n  \"userId\": \"user_test\",\n  \"amount\": 5.99,\n  \"paymentMethod\": \"DEBIT_CARD\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/payments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Process Payment - Net Banking",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"orderId\": \"test_order_004\",\n  \"userId\": \"user_test\",\n  \"amount\": 999.99,\n  \"paymentMethod\": \"NET_BANKING\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/payments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Process Payment - Wallet",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"orderId\": \"test_order_005\",\n  \"userId\": \"user_test\",\n  \"amount\": 25.00,\n  \"paymentMethod\": \"WALLET\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/payments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Transaction Retrieval",
+            "item": [
+                {
+                    "name": "Get Transaction by ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_with_txns}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments/{{transaction_id_completed}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments",
+                                "{{transaction_id_completed}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get User Transactions - User 001",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_with_txns}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get User Transactions - User 002",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id_002}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Transactions - New User (Empty)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_no_txns"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Internal Endpoints",
+            "item": [
+                {
+                    "name": "Get Transaction by Order ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments/internal/order/{{order_id}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments",
+                                "internal",
+                                "order",
+                                "{{order_id}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Refund Transaction",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments/internal/{{transaction_id_for_refund}}/refund",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments",
+                                "internal",
+                                "{{transaction_id_for_refund}}",
+                                "refund"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Transaction by Order - User 002",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments/internal/order/order_004",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments",
+                                "internal",
+                                "order",
+                                "order_004"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Error Scenarios",
+            "item": [
+                {
+                    "name": "Transaction Not Found",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_001"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments/00000000-0000-0000-0000-000000000000",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments",
+                                "00000000-0000-0000-0000-000000000000"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Transaction - Wrong User (Unauthorized)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "user_999"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments/{{transaction_id_completed}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments",
+                                "{{transaction_id_completed}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Refund Already Refunded",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments/internal/aa0e8400-e29b-41d4-a716-446655440003/refund",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments",
+                                "internal",
+                                "aa0e8400-e29b-41d4-a716-446655440003",
+                                "refund"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Refund Failed Transaction",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments/internal/aa0e8400-e29b-41d4-a716-446655440005/refund",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments",
+                                "internal",
+                                "aa0e8400-e29b-41d4-a716-446655440005",
+                                "refund"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Process Payment - Validation Error",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"orderId\": \"\",\n  \"amount\": 0,\n  \"paymentMethod\": \"\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/payments",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Order Not Found",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/payments/internal/order/nonexistent_order",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "payments",
+                                "internal",
+                                "order",
+                                "nonexistent_order"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8087",
+            "type": "string"
+        },
+        {
+            "key": "user_id_with_txns",
+            "value": "user_001",
+            "type": "string"
+        },
+        {
+            "key": "user_id_002",
+            "value": "user_002",
+            "type": "string"
+        },
+        {
+            "key": "transaction_id_completed",
+            "value": "aa0e8400-e29b-41d4-a716-446655440001",
+            "type": "string"
+        },
+        {
+            "key": "transaction_id_for_refund",
+            "value": "aa0e8400-e29b-41d4-a716-446655440004",
+            "type": "string"
+        },
+        {
+            "key": "order_id",
+            "value": "order_001",
+            "type": "string"
+        },
+        {
+            "key": "created_transaction_id",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
