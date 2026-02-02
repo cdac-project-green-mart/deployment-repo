@@ -17,19 +17,63 @@ const CONFIG = {
 
 // Seed data
 const SEED_DATA = {
-    // Test users
+    // Test users with proper roles
     users: [
         { name: 'Test Admin', email: 'admin@test.com', password: 'Admin@123456', role: 'ADMIN' },
         { name: 'Test Vendor', email: 'vendor@test.com', password: 'Vendor@123456', role: 'VENDOR' },
+        { name: 'Test Vendor 2', email: 'vendor2@test.com', password: 'Vendor@123456', role: 'VENDOR' },
         { name: 'Test Customer', email: 'customer@test.com', password: 'Customer@123456', role: 'CUSTOMER' },
     ],
-    // Test products (will be created by vendor)
+    // Test products with REQUIRED images and HIGH stock for checkout tests
     products: [
-        { name: 'Organic Apples', description: 'Fresh organic apples', price: 5.99, category: 'Fruits', stock: 100 },
-        { name: 'Green Tea', description: 'Premium green tea', price: 12.99, category: 'Beverages', stock: 50 },
-        { name: 'Whole Wheat Bread', description: 'Freshly baked bread', price: 3.49, category: 'Bakery', stock: 75 },
-        { name: 'Organic Milk', description: 'Farm fresh organic milk', price: 4.99, category: 'Dairy', stock: 30 },
-        { name: 'Brown Rice', description: '1kg organic brown rice', price: 6.99, category: 'Grains', stock: 200 },
+        {
+            name: 'Organic Apples',
+            description: 'Fresh organic apples from local farms',
+            price: 5.99,
+            category: 'Fruits',
+            stock: 500,
+            images: ['https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400']
+        },
+        {
+            name: 'Green Tea',
+            description: 'Premium green tea leaves from Japan',
+            price: 12.99,
+            category: 'Beverages',
+            stock: 500,
+            images: ['https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400']
+        },
+        {
+            name: 'Whole Wheat Bread',
+            description: 'Freshly baked whole wheat bread',
+            price: 3.49,
+            category: 'Bakery',
+            stock: 500,
+            images: ['https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400']
+        },
+        {
+            name: 'Organic Milk',
+            description: 'Farm fresh organic whole milk 1L',
+            price: 4.99,
+            category: 'Dairy',
+            stock: 500,
+            images: ['https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400']
+        },
+        {
+            name: 'Brown Rice',
+            description: '1kg premium organic brown rice',
+            price: 6.99,
+            category: 'Grains',
+            stock: 500,
+            images: ['https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400']
+        },
+        {
+            name: 'Wireless Earbuds',
+            description: 'High quality wireless bluetooth earbuds',
+            price: 29.99,
+            category: 'Electronics',
+            stock: 500,
+            images: ['https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400']
+        }
     ]
 };
 
@@ -79,10 +123,11 @@ async function loginVendor() {
     });
 
     if (res.data.success || res.data.token) {
-        log('  Vendor logged in successfully', 'success');
+        const userId = res.data.user?.id || res.data.data?.userId || res.data.userId;
+        log(`  Vendor logged in successfully (ID: ${userId})`, 'success');
         return {
             token: res.data.token,
-            userId: res.data.data?.userId || res.data.userId
+            userId: userId
         };
     }
     throw new Error('Vendor login failed');
@@ -98,11 +143,13 @@ async function seedProducts(vendorAuth) {
                 name: product.name,
                 description: product.description,
                 price: product.price,
-                category: product.category
+                category: product.category,
+                images: product.images  // REQUIRED: at least one image
             }, {
                 headers: {
                     'Authorization': `Bearer ${vendorAuth.token}`,
-                    'X-User-Id': vendorAuth.userId
+                    'X-User-Id': vendorAuth.userId,
+                    'X-User-Role': 'VENDOR'
                 }
             });
 

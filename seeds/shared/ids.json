@@ -1,0 +1,115 @@
+{
+    "digitalocean": {
+        "cdnUrl": "https://green-mart-product-storage.sfo3.cdn.digitaloceanspaces.com",
+        "productsPath": "products"
+    },
+    "users": {
+        "admin": {
+            "id": "00000000-0000-4000-a000-000000000001",
+            "email": "admin@greenmart.com",
+            "role": "ADMIN"
+        },
+        "vendor1": {
+            "id": "00000000-0000-4000-a000-000000000002",
+            "email": "vendor@freshfarms.com",
+            "role": "VENDOR"
+        },
+        "vendor2": {
+            "id": "00000000-0000-4000-a000-000000000003",
+            "email": "vendor@greengrocer.com",
+            "role": "VENDOR"
+        },
+        "vendor3": {
+            "id": "00000000-0000-4000-a000-000000000004",
+            "email": "vendor@organicdelights.com",
+            "role": "VENDOR"
+        },
+        "customer1": {
+            "id": "00000000-0000-4000-a000-000000000005",
+            "email": "john@example.com",
+            "role": "CUSTOMER"
+        },
+        "customer2": {
+            "id": "00000000-0000-4000-a000-000000000006",
+            "email": "jane@example.com",
+            "role": "CUSTOMER"
+        },
+        "customer3": {
+            "id": "00000000-0000-4000-a000-000000000007",
+            "email": "bob@example.com",
+            "role": "CUSTOMER"
+        }
+    },
+    "products": [
+        {
+            "id": "prod_001_apple",
+            "image": "apple.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000002"
+        },
+        {
+            "id": "prod_002_tomato",
+            "image": "tomato.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000002"
+        },
+        {
+            "id": "prod_003_potatoes",
+            "image": "potatoes.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000002"
+        },
+        {
+            "id": "prod_004_mango",
+            "image": "mango.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000003"
+        },
+        {
+            "id": "prod_005_cabbage",
+            "image": "cabbage.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000003"
+        },
+        {
+            "id": "prod_006_capsicum",
+            "image": "capsicum.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000003"
+        },
+        {
+            "id": "prod_007_cauliflower",
+            "image": "cauliflower.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000004"
+        },
+        {
+            "id": "prod_008_chili",
+            "image": "chili.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000004"
+        },
+        {
+            "id": "prod_009_chinese_cabbage",
+            "image": "chinese-cabbage.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000004"
+        },
+        {
+            "id": "prod_010_corn",
+            "image": "corn.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000002"
+        },
+        {
+            "id": "prod_011_eggplant",
+            "image": "eggplant.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000003"
+        },
+        {
+            "id": "prod_012_lettuce",
+            "image": "lettuce.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000004"
+        },
+        {
+            "id": "prod_013_orange",
+            "image": "orange.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000002"
+        },
+        {
+            "id": "prod_014_red_capsicum",
+            "image": "red-capsicum.jpg",
+            "vendorId": "00000000-0000-4000-a000-000000000003"
+        }
+    ]
+}

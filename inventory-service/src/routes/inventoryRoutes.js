@@ -20,6 +20,13 @@ router.post('/check-availability', [
     validateRequest
 ], inventoryController.checkAvailability);
 
+// POST /api/inventory/reserve - Bulk reserve (called by checkout service)
+router.post('/reserve', [
+    body('productId').notEmpty().withMessage('Product ID is required'),
+    body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
+    validateRequest
+], inventoryController.bulkReserveStock);
+
 // GET /api/inventory/:productId - Get inventory for product
 router.get('/:productId', inventoryController.getInventory);
 

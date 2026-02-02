@@ -1,4 +1,5 @@
 const productService = require('../services/productService');
+const imageService = require('../services/imageService');
 
 class ProductController {
     // GET /api/products - Get all products with pagination
@@ -44,7 +45,7 @@ class ProductController {
         }
     }
 
-    // POST /api/products - Create new product (Admin/Vendor only)
+    // POST /api/products - Create new product with images (REQUIRED)
     async createProduct(req, res, next) {
         try {
             const userId = req.headers['x-user-id'];
@@ -65,7 +66,34 @@ class ProductController {
                 });
             }
 
-            const product = await productService.createProduct(userId, req.body);
+            // Handle images: either from file uploads or from JSON body
+            let imageUrls = [];
+            if (req.files && req.files.length > 0) {
+                // Files uploaded via multipart/form-data
+                imageUrls = await imageService.uploadImages(req.files);
+            } else if (req.body.images && Array.isArray(req.body.images)) {
+                // Image URLs provided in JSON body
+                imageUrls = req.body.images;
+            } else if (typeof req.body.images === 'string') {
+                // Single image URL as string
+                imageUrls = [req.body.images];
+            }
+
+            // REQUIRE at least one image
+            if (imageUrls.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'At least one product image is required'
+                });
+            }
+
+            // Create product with image URLs
+            const productData = {
+                ...req.body,
+                images: imageUrls
+            };
+
+            const product = await productService.createProduct(userId, productData);
 
             res.status(201).json({
                 success: true,
@@ -77,7 +105,7 @@ class ProductController {
         }
     }
 
-    // PUT /api/products/:id - Update product (Admin/Vendor only)
+    // PUT /api/products/:id - Update product with optional images (Admin/Vendor only)
     async updateProduct(req, res, next) {
         try {
             const userId = req.headers['x-user-id'];
@@ -97,11 +125,27 @@ class ProductController {
                 });
             }
 
+            // Handle image updates: either from file uploads or from JSON body
+            let updateData = { ...req.body };
+
+            if (req.files && req.files.length > 0) {
+                // Files uploaded via multipart/form-data - upload and use new URLs
+                const imageUrls = await imageService.uploadImages(req.files);
+                updateData.images = imageUrls;
+            } else if (req.body.images && Array.isArray(req.body.images)) {
+                // Image URLs provided in JSON body
+                updateData.images = req.body.images;
+            } else if (typeof req.body.images === 'string') {
+                // Single image URL as string
+                updateData.images = [req.body.images];
+            }
+            // If no images provided, don't update images field (keep existing)
+
             const product = await productService.updateProduct(
                 req.params.id,
                 userId,
                 userRole.toUpperCase(),
-                req.body
+                updateData
             );
 
             res.json({

@@ -1,5 +1,6 @@
 # Embedded repositories
 backend-product-service/
+webfrontend/
 
 # Build outputs
 target/

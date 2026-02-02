@@ -151,6 +151,26 @@ class InventoryController {
         }
     }
 
+    // POST /api/inventory/reserve - Bulk reserve (called by checkout service)
+    async bulkReserveStock(req, res, next) {
+        try {
+            const { productId, quantity } = req.body;
+
+            const inventory = await inventoryService.reserveStock(
+                productId,
+                quantity
+            );
+
+            res.json({
+                success: true,
+                message: `Reserved ${quantity} units for product ${productId}`,
+                data: inventory
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     // POST /api/inventory/check-availability - Check stock for multiple products
     async checkAvailability(req, res, next) {
         try {
