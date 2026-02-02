@@ -12,7 +12,7 @@ services:
   # ===========================================
   # DATABASES
   # ===========================================
-  
+
   postgres:
     image: postgres:16-alpine
     container_name: green-mart-postgres
@@ -28,7 +28,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -57,7 +57,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -75,7 +75,7 @@ services:
   # ===========================================
   # SERVICE DISCOVERY
   # ===========================================
-  
+
   eureka-server:
     build:
       context: ./eureka-server
@@ -86,7 +86,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -104,7 +104,7 @@ services:
   # ===========================================
   # API GATEWAY
   # ===========================================
-  
+
   api-gateway:
     build:
       context: ./api-gateway
@@ -121,7 +121,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -139,7 +139,7 @@ services:
   # ===========================================
   # MICROSERVICES - SPRING BOOT
   # ===========================================
-  
+
   auth-service:
     build:
       context: ./auth-service
@@ -161,7 +161,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -198,7 +198,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "-", "http://localhost:8085/health"]
+      test: [ "CMD", "wget", "-q", "-O", "-", "http://localhost:8085/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -235,7 +235,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8087/actuator/health"]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8087/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -274,7 +274,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8088/actuator/health"]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8088/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -292,7 +292,7 @@ services:
   # ===========================================
   # MICROSERVICES - NODE.JS
   # ===========================================
-  
+
   user-service:
     build:
       context: ./user-service
@@ -313,7 +313,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8083/actuator/health"]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8083/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -348,7 +348,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8084/actuator/health"]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8084/actuator/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -383,7 +383,7 @@ services:
     networks:
       - green-mart-network
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8086/health"]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8086/health" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -392,6 +392,53 @@ services:
       resources:
         limits:
           memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ===========================================
+  # ADMIN TOOLS (Optional - disable in production)
+  # ===========================================
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: green-mart-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - green-mart-network
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: green-mart-mongo-express
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD}
+    ports:
+      - "8081:8081"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - green-mart-network
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
