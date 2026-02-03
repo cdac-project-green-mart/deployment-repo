@@ -113,6 +113,18 @@ class ProductService {
         }
 
         await product.deleteOne();
+
+        // Clean up inventory data
+        try {
+            const axios = require('axios');
+            const inventoryUrl = process.env.INVENTORY_SERVICE_URL || 'http://localhost:8086';
+            await axios.delete(`${inventoryUrl}/api/inventory/${productId}`);
+            console.log(`Inventory deleted for product ${productId}`);
+        } catch (error) {
+            // Log but don't fail - inventory cleanup is best effort
+            console.warn(`Failed to delete inventory for product ${productId}:`, error.message);
+        }
+
         return { message: 'Product deleted successfully' };
     }
 

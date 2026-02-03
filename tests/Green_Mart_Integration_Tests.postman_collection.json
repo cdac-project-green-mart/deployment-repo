@@ -504,8 +504,8 @@
                                 "value": "application/json"
                             },
                             {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
                             }
                         ],
                         "body": {
@@ -534,6 +534,12 @@
                     ],
                     "request": {
                         "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
                         "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
                     }
                 },
@@ -561,8 +567,8 @@
                                 "value": "application/json"
                             },
                             {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
                             }
                         ],
                         "body": {
@@ -591,6 +597,12 @@
                     ],
                     "request": {
                         "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
                         "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
                     }
                 }
@@ -619,8 +631,8 @@
                         "method": "GET",
                         "header": [
                             {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
                             }
                         ],
                         "url": "{{base_url}}:{{gateway_port}}/api/orders/cart"
@@ -650,8 +662,8 @@
                                 "value": "application/json"
                             },
                             {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
                             }
                         ],
                         "body": {
@@ -681,8 +693,8 @@
                         "method": "PUT",
                         "header": [
                             {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
                             }
                         ],
                         "url": "{{base_url}}:{{gateway_port}}/api/orders/cart/update?productId={{product_id}}&quantity=3"
@@ -708,8 +720,8 @@
                         "method": "GET",
                         "header": [
                             {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
                             }
                         ],
                         "url": "{{base_url}}:{{gateway_port}}/api/orders/cart"
@@ -739,6 +751,12 @@
                     ],
                     "request": {
                         "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
                         "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
                     }
                 },
@@ -770,10 +788,6 @@
                             {
                                 "key": "Authorization",
                                 "value": "Bearer {{auth_token}}"
-                            },
-                            {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
                             }
                         ],
                         "body": {
@@ -809,8 +823,8 @@
                         "method": "GET",
                         "header": [
                             {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
                             }
                         ],
                         "url": "{{base_url}}:{{gateway_port}}/api/orders"
@@ -840,8 +854,8 @@
                         "method": "GET",
                         "header": [
                             {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
                             }
                         ],
                         "url": "{{base_url}}:{{gateway_port}}/api/orders/{{order_id}}"
@@ -866,6 +880,12 @@
                     ],
                     "request": {
                         "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
                         "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
                     }
                 }
@@ -898,8 +918,8 @@
                         "method": "GET",
                         "header": [
                             {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
                             }
                         ],
                         "url": "{{base_url}}:{{gateway_port}}/api/payments/{{transaction_id}}"
@@ -925,8 +945,8 @@
                         "method": "GET",
                         "header": [
                             {
-                                "key": "X-User-Id",
-                                "value": "{{user_id}}"
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
                             }
                         ],
                         "url": "{{base_url}}:{{gateway_port}}/api/payments"

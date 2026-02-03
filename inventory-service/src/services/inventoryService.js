@@ -168,6 +168,12 @@ class InventoryService {
             allAvailable: results.every(r => r.sufficient)
         };
     }
+
+    // Delete inventory for a product (called when product is deleted)
+    async deleteInventory(productId) {
+        const result = await Inventory.deleteOne({ productId });
+        return result.deletedCount > 0;
+    }
 }
 
 module.exports = new InventoryService();

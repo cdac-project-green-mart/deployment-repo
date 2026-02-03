@@ -12,6 +12,11 @@ router.get('/', [
     validateRequest
 ], inventoryController.getAllInventory);
 
+// GET /api/inventory/health - Health check
+router.get('/health', (req, res) => {
+    res.json({ success: true, message: 'Inventory service is healthy', status: 'UP' });
+});
+
 // POST /api/inventory/check-availability - Check stock for multiple products
 router.post('/check-availability', [
     body('items').isArray({ min: 1 }).withMessage('Items array is required'),
@@ -66,5 +71,22 @@ router.post('/:productId/confirm', [
     body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
     validateRequest
 ], inventoryController.confirmReservation);
+
+// POST /api/inventory/confirm - Bulk confirm (called by checkout service after successful payment)
+router.post('/confirm', [
+    body('productId').notEmpty().withMessage('Product ID is required'),
+    body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
+    validateRequest
+], inventoryController.bulkConfirmStock);
+
+// POST /api/inventory/release - Bulk release (called by checkout service on failure)
+router.post('/release', [
+    body('productId').notEmpty().withMessage('Product ID is required'),
+    body('quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
+    validateRequest
+], inventoryController.bulkReleaseStock);
+
+// DELETE /api/inventory/:productId - Delete inventory for a product
+router.delete('/:productId', inventoryController.deleteInventory);
 
 module.exports = router;

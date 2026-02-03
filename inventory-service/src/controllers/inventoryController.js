@@ -186,6 +186,60 @@ class InventoryController {
             next(error);
         }
     }
+
+    // POST /api/inventory/confirm - Bulk confirm (called by checkout service after successful payment)
+    async bulkConfirmStock(req, res, next) {
+        try {
+            const { productId, quantity } = req.body;
+
+            const inventory = await inventoryService.confirmReservation(
+                productId,
+                quantity
+            );
+
+            res.json({
+                success: true,
+                message: `Confirmed ${quantity} units for product ${productId}`,
+                data: inventory
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    // POST /api/inventory/release - Bulk release (called by checkout service on failure)
+    async bulkReleaseStock(req, res, next) {
+        try {
+            const { productId, quantity } = req.body;
+
+            const inventory = await inventoryService.releaseStock(
+                productId,
+                quantity
+            );
+
+            res.json({
+                success: true,
+                message: `Released ${quantity} reserved units for product ${productId}`,
+                data: inventory
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    // DELETE /api/inventory/:productId - Delete inventory for a product
+    async deleteInventory(req, res, next) {
+        try {
+            await inventoryService.deleteInventory(req.params.productId);
+
+            res.json({
+                success: true,
+                message: 'Inventory deleted successfully'
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 module.exports = new InventoryController();
