@@ -1,6 +1,9 @@
 # Green Mart API Reference
 
-Complete API documentation for frontend developers. All endpoints are accessible through the **API Gateway** at `http://localhost:8080`.
+Complete API documentation for frontend developers. All endpoints are accessible through the **API Gateway**:
+
+- **Production:** `http://68.183.86.246:8080`
+- **Local Development:** `http://localhost:8080`
 
 ---
 
@@ -18,15 +21,18 @@ Some endpoints also require `X-User-Id` header (extracted from token by gateway 
 
 ## Base URLs
 
-| Service | Direct URL | Gateway URL |
-|---------|-----------|-------------|
-| Auth | `http://localhost:8082` | `http://localhost:8080/api/auth` |
-| User | `http://localhost:8083` | `http://localhost:8080/api/users` |
-| Product | `http://localhost:8084` | `http://localhost:8080/api/products` |
-| Order | `http://localhost:8085` | `http://localhost:8080/api/orders` |
-| Inventory | `http://localhost:8086` | `http://localhost:8080/api/inventory` |
-| Payment | `http://localhost:8087` | `http://localhost:8080/api/payments` |
-| Checkout | `http://localhost:8088` | `http://localhost:8080/api/checkout` |
+### Production Gateway: `http://68.183.86.246:8080`
+### Local Gateway: `http://localhost:8080`
+
+| Service | Endpoint Path | Production URL | Local URL |
+|---------|--------------|----------------|-----------|
+| Auth | `/api/auth` | `http://68.183.86.246:8080/api/auth` | `http://localhost:8080/api/auth` |
+| User | `/api/users` | `http://68.183.86.246:8080/api/users` | `http://localhost:8080/api/users` |
+| Product | `/api/products` | `http://68.183.86.246:8080/api/products` | `http://localhost:8080/api/products` |
+| Order | `/api/orders` | `http://68.183.86.246:8080/api/orders` | `http://localhost:8080/api/orders` |
+| Inventory | `/api/inventory` | `http://68.183.86.246:8080/api/inventory` | `http://localhost:8080/api/inventory` |
+| Payment | `/api/payments` | `http://68.183.86.246:8080/api/payments` | `http://localhost:8080/api/payments` |
+| Checkout | `/api/checkout` | `http://68.183.86.246:8080/api/checkout` | `http://localhost:8080/api/checkout` |
 
 ---
 

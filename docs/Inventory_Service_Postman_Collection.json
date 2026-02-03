@@ -1,0 +1,696 @@
+{
+    "info": {
+        "_postman_id": "inventory-service-testing-2026",
+        "name": "Inventory Service - Green Mart",
+        "description": "Complete test collection for Inventory Service with 25 test cases covering stock management, reservation workflows, availability checks, and error scenarios.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Checks",
+            "item": [
+                {
+                    "name": "Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "health"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Actuator Health Check",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/actuator/health",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "actuator",
+                                "health"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Get Inventory",
+            "item": [
+                {
+                    "name": "Get All Inventory",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get All Inventory with Pagination",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory?page=1&limit=5",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "5"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Low Stock Items Only",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory?lowStockOnly=true",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory"
+                            ],
+                            "query": [
+                                {
+                                    "key": "lowStockOnly",
+                                    "value": "true"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Inventory for Specific Product",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_high_stock}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_high_stock}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Inventory for Non-Existent Product (Auto-Create)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_new}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_new}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Stock Management",
+            "item": [
+                {
+                    "name": "Set Stock Level (Absolute)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 200,\n  \"lowStockThreshold\": 25\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_high_stock}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_high_stock}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Stock (Increment)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 50\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_high_stock}}/add",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_high_stock}}",
+                                "add"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Reduce Stock (Decrement)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 30\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_high_stock}}/reduce",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_high_stock}}",
+                                "reduce"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Stock to New Product",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 100\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_new}}/add",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_new}}",
+                                "add"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Low Stock Threshold",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 100,\n  \"lowStockThreshold\": 15\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_new}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_new}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Set Stock - Validation Error (Negative)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": -10\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_high_stock}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_high_stock}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Reservation System",
+            "item": [
+                {
+                    "name": "Reserve Stock",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 20\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_high_stock}}/reserve",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_high_stock}}",
+                                "reserve"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Release Reserved Stock",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 10\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_high_stock}}/release",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_high_stock}}",
+                                "release"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Confirm Reservation",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 15\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_high_stock}}/confirm",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_high_stock}}",
+                                "confirm"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Complete Reservation Workflow - Reserve",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 25\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/prod_003_milk/reserve",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "prod_003_milk",
+                                "reserve"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Complete Reservation Workflow - Confirm",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 25\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/prod_003_milk/confirm",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "prod_003_milk",
+                                "confirm"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Cancellation Workflow - Reserve",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 15\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/prod_004_eggs/reserve",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "prod_004_eggs",
+                                "reserve"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Cancellation Workflow - Release",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 15\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/prod_004_eggs/release",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "prod_004_eggs",
+                                "release"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Availability Checks",
+            "item": [
+                {
+                    "name": "Check Availability - All Available",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"items\": [\n    { \"productId\": \"prod_001_apples\", \"quantity\": 50 },\n    { \"productId\": \"prod_003_milk\", \"quantity\": 30 }\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/check-availability",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "check-availability"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Check Availability - Insufficient Stock",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"items\": [\n    { \"productId\": \"prod_016_shrimp\", \"quantity\": 20 },\n    { \"productId\": \"prod_017_croissants\", \"quantity\": 10 }\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/check-availability",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "check-availability"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Check Availability - Mixed Results",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"items\": [\n    { \"productId\": \"prod_001_apples\", \"quantity\": 50 },\n    { \"productId\": \"prod_016_shrimp\", \"quantity\": 20 },\n    { \"productId\": \"prod_003_milk\", \"quantity\": 30 }\n  ]\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/check-availability",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "check-availability"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Error Scenarios",
+            "item": [
+                {
+                    "name": "Reduce Stock - Insufficient Available (Error)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 100\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_low_stock}}/reduce",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_low_stock}}",
+                                "reduce"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Reserve Stock - Insufficient Available (Error)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 50\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/inventory/{{product_id_low_stock}}/reserve",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "inventory",
+                                "{{product_id_low_stock}}",
+                                "reserve"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8086",
+            "type": "string"
+        },
+        {
+            "key": "product_id_high_stock",
+            "value": "prod_001_apples",
+            "type": "string"
+        },
+        {
+            "key": "product_id_low_stock",
+            "value": "prod_016_shrimp",
+            "type": "string"
+        },
+        {
+            "key": "product_id_new",
+            "value": "prod_999_test",
+            "type": "string"
+        }
+    ]
+}
