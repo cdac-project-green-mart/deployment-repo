@@ -27,18 +27,8 @@ const CONFIG = {
     PRODUCT_URL: process.env.PRODUCT_URL || 'http://localhost:8084',
     INVENTORY_URL: process.env.INVENTORY_URL || 'http://localhost:8086',
 
-    // ==================== IMAGE SOURCE OPTIONS ====================
-    // Choose ONE of these options for product images:
-
-    // OPTION 1: Use your own DO Spaces CDN (RECOMMENDED for production)
-    // First upload images to your bucket, then set this to your CDN URL:
-    // DO_CDN_BASE: 'https://your-bucket.sgp1.cdn.digitaloceanspaces.com/products',
-
-    // OPTION 2: Use Unsplash URLs directly (simpler, but depends on third-party)
-    USE_UNSPLASH: true,  // Set to false if using DO_CDN_BASE
-
-    // Your DO Spaces CDN base URL (uncomment and set when ready)
-    // DO_CDN_BASE: 'https://greenmart-images.sgp1.cdn.digitaloceanspaces.com/products',
+    // DigitalOcean Spaces CDN base URL for product images
+    DO_CDN_BASE: 'https://green-mart-product-storage.sfo3.cdn.digitaloceanspaces.com/products',
 };
 
 // ==================== PRODUCTION USERS ====================
@@ -64,139 +54,123 @@ const USERS = [
 ];
 
 // ==================== PRODUCT CATALOG ====================
-// Image URLs - uses Unsplash by default, or your DO CDN if configured
-const getImageUrl = (filename, unsplashId) => {
-    if (CONFIG.DO_CDN_BASE) {
-        return `${CONFIG.DO_CDN_BASE}/${filename}`;
-    }
-    return `https://images.unsplash.com/photo-${unsplashId}?w=800`;
-};
+// Image URL helper - uses DO Spaces CDN
+const getImageUrl = (filename) => `${CONFIG.DO_CDN_BASE}/${filename}`;
 
 const PRODUCTS = [
-    // Fruits & Vegetables
+    // Fruits
     {
         name: 'Organic Red Apples',
         description: 'Fresh organic red apples from local farms. Sweet and crispy, perfect for snacking or baking.',
         price: 4.99,
         category: 'Fruits',
         stock: 200,
-        images: [getImageUrl('apples.jpg', '1560806887-1e4cd0b6cbd6')]
+        images: [getImageUrl('apple.jpg')]
     },
     {
-        name: 'Fresh Bananas',
-        description: 'Ripe yellow bananas, rich in potassium and perfect for smoothies or as a healthy snack.',
-        price: 2.49,
+        name: 'Fresh Mangoes',
+        description: 'Sweet and juicy tropical mangoes, rich in vitamins A and C. Perfect for smoothies or desserts.',
+        price: 6.99,
         category: 'Fruits',
-        stock: 300,
-        images: [getImageUrl('bananas.jpg', '1571771894821-ce9b6c11b08e')]
+        stock: 150,
+        images: [getImageUrl('mango.jpg')]
     },
     {
-        name: 'Organic Spinach',
-        description: 'Fresh organic spinach leaves, packed with iron and vitamins. Great for salads and cooking.',
+        name: 'Fresh Oranges',
+        description: 'Juicy oranges packed with vitamin C. Great for fresh juice or healthy snacking.',
+        price: 3.99,
+        category: 'Fruits',
+        stock: 250,
+        images: [getImageUrl('orange.jpg')]
+    },
+    // Vegetables
+    {
+        name: 'Fresh Tomatoes',
+        description: 'Ripe red tomatoes, perfect for salads, sauces, and sandwiches. Locally grown.',
+        price: 3.49,
+        category: 'Vegetables',
+        stock: 180,
+        images: [getImageUrl('tomato.jpg')]
+    },
+    {
+        name: 'Green Cabbage',
+        description: 'Fresh green cabbage, crispy and nutritious. Great for coleslaw, stir-fry, or soups.',
+        price: 2.49,
+        category: 'Vegetables',
+        stock: 120,
+        images: [getImageUrl('cabbage.jpg')]
+    },
+    {
+        name: 'Green Capsicum',
+        description: 'Fresh green bell peppers with a mild, sweet flavor. Perfect for salads and stir-fries.',
         price: 3.99,
         category: 'Vegetables',
         stock: 150,
-        images: [getImageUrl('spinach.jpg', '1576045057995-568f588f82fb')]
+        images: [getImageUrl('capsicum.jpg')]
     },
     {
-        name: 'Cherry Tomatoes',
-        description: 'Sweet and juicy cherry tomatoes, perfect for salads, pasta, or snacking.',
-        price: 5.49,
-        category: 'Vegetables',
-        stock: 180,
-        images: [getImageUrl('tomatoes.jpg', '1546470427-227c7883a694')]
-    },
-    // Dairy
-    {
-        name: 'Organic Whole Milk',
-        description: 'Farm-fresh organic whole milk, 1 gallon. Pasteurized and homogenized.',
-        price: 6.99,
-        category: 'Dairy',
-        stock: 100,
-        images: [getImageUrl('milk.jpg', '1563636619-e9143da7973b')]
-    },
-    {
-        name: 'Greek Yogurt',
-        description: 'Creamy Greek yogurt, high in protein. Plain flavor, perfect with fruits and honey.',
+        name: 'Red Capsicum',
+        description: 'Sweet red bell peppers, rich in vitamins. Great for grilling, roasting, or raw in salads.',
         price: 4.49,
-        category: 'Dairy',
-        stock: 120,
-        images: [getImageUrl('yogurt.jpg', '1571212515416-d5a0a18f9d1f')]
+        category: 'Vegetables',
+        stock: 140,
+        images: [getImageUrl('red-capsicum.jpg')]
     },
     {
-        name: 'Free Range Eggs',
-        description: 'Farm fresh free-range eggs, dozen. From happy, pasture-raised hens.',
-        price: 5.99,
-        category: 'Dairy',
+        name: 'Fresh Cauliflower',
+        description: 'Farm-fresh cauliflower, versatile and nutritious. Perfect for roasting or cauliflower rice.',
+        price: 3.99,
+        category: 'Vegetables',
+        stock: 100,
+        images: [getImageUrl('cauliflower.jpg')]
+    },
+    {
+        name: 'Fresh Eggplant',
+        description: 'Purple eggplant perfect for grilling, baking, or making baba ganoush.',
+        price: 2.99,
+        category: 'Vegetables',
+        stock: 130,
+        images: [getImageUrl('eggplant.jpg')]
+    },
+    {
+        name: 'Fresh Lettuce',
+        description: 'Crisp and fresh lettuce leaves, perfect for salads, sandwiches, and wraps.',
+        price: 2.49,
+        category: 'Vegetables',
+        stock: 100,
+        images: [getImageUrl('lettuce.jpg')]
+    },
+    {
+        name: 'Fresh Potatoes',
+        description: 'Farm-fresh potatoes, versatile for baking, frying, mashing, or roasting.',
+        price: 1.99,
+        category: 'Vegetables',
+        stock: 300,
+        images: [getImageUrl('potatoes.jpg')]
+    },
+    {
+        name: 'Sweet Corn',
+        description: 'Fresh sweet corn on the cob. Perfect for grilling, boiling, or adding to salads.',
+        price: 0.99,
+        category: 'Vegetables',
         stock: 200,
-        images: [getImageUrl('eggs.jpg', '1518569656558-1f25e69d93d7')]
-    },
-    // Bakery
-    {
-        name: 'Whole Wheat Bread',
-        description: 'Freshly baked whole wheat bread. No preservatives, made with organic flour.',
-        price: 4.29,
-        category: 'Bakery',
-        stock: 80,
-        images: [getImageUrl('bread.jpg', '1509440159596-0249088772ff')]
+        images: [getImageUrl('corn.jpg')]
     },
     {
-        name: 'Sourdough Loaf',
-        description: 'Artisan sourdough bread with a crispy crust and tangy flavor. Naturally leavened.',
-        price: 5.99,
-        category: 'Bakery',
-        stock: 60,
-        images: [getImageUrl('sourdough.jpg', '1585478259715-876ace1d7f39')]
-    },
-    // Beverages
-    {
-        name: 'Premium Green Tea',
-        description: 'Organic Japanese green tea leaves. 50 tea bags. Rich in antioxidants.',
-        price: 12.99,
-        category: 'Beverages',
-        stock: 100,
-        images: [getImageUrl('green-tea.jpg', '1564890369478-c89ca6d9cde9')]
-    },
-    {
-        name: 'Cold Pressed Orange Juice',
-        description: 'Fresh cold-pressed orange juice, 1L. No added sugar, 100% pure.',
-        price: 7.49,
-        category: 'Beverages',
+        name: 'Chinese Cabbage',
+        description: 'Fresh napa cabbage, perfect for Asian stir-fries, kimchi, and salads.',
+        price: 3.49,
+        category: 'Vegetables',
         stock: 90,
-        images: [getImageUrl('orange-juice.jpg', '1621506289937-a8e4df240d0b')]
+        images: [getImageUrl('chinese-cabbage.jpg')]
     },
-    // Grains & Pantry
     {
-        name: 'Organic Brown Rice',
-        description: 'Premium organic brown rice, 2kg bag. Whole grain, high in fiber.',
-        price: 8.99,
-        category: 'Grains',
+        name: 'Fresh Green Chili',
+        description: 'Spicy green chilies to add heat to your dishes. Fresh and locally sourced.',
+        price: 1.99,
+        category: 'Vegetables',
         stock: 150,
-        images: [getImageUrl('brown-rice.jpg', '1586201375761-83865001e31c')]
-    },
-    {
-        name: 'Organic Quinoa',
-        description: 'Tri-color organic quinoa, 500g. Complete protein, gluten-free.',
-        price: 9.99,
-        category: 'Grains',
-        stock: 100,
-        images: [getImageUrl('quinoa.jpg', '1612358405627-9a56a3b2f6e6')]
-    },
-    {
-        name: 'Extra Virgin Olive Oil',
-        description: 'Premium extra virgin olive oil, 500ml. Cold-pressed from Italian olives.',
-        price: 14.99,
-        category: 'Pantry',
-        stock: 80,
-        images: [getImageUrl('olive-oil.jpg', '1474979266404-7eaacbcd87c5')]
-    },
-    {
-        name: 'Raw Honey',
-        description: 'Pure raw honey, 500g. Unprocessed and unfiltered from local beekeepers.',
-        price: 11.99,
-        category: 'Pantry',
-        stock: 70,
-        images: [getImageUrl('honey.jpg', '1558642452-9d2a7deb7f62')]
+        images: [getImageUrl('chili.jpg')]
     }
 ];
 
