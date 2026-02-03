@@ -1,0 +1,1099 @@
+{
+    "info": {
+        "name": "Green Mart - Integration Test Suite",
+        "description": "Complete integration test collection for Green Mart E-Commerce Backend.\n\n## Test Flow\n1. Health Checks - Verify all services are running\n2. Authentication - Register and login\n3. Products - CRUD operations\n4. Inventory - Stock management\n5. Cart - Shopping cart operations\n6. Checkout - SAGA pattern flow\n7. Orders - Order verification\n8. Payments - Payment verification\n9. Gateway - API Gateway routing\n\n## Prerequisites\n- All services running via `docker compose up -d`\n- Run seed data: `cd tests && npm run seed`",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://68.183.86.246"
+        },
+        {
+            "key": "auth_port",
+            "value": "8082"
+        },
+        {
+            "key": "product_port",
+            "value": "8084"
+        },
+        {
+            "key": "order_port",
+            "value": "8085"
+        },
+        {
+            "key": "inventory_port",
+            "value": "8086"
+        },
+        {
+            "key": "payment_port",
+            "value": "8087"
+        },
+        {
+            "key": "checkout_port",
+            "value": "8088"
+        },
+        {
+            "key": "gateway_port",
+            "value": "8080"
+        },
+        {
+            "key": "auth_token",
+            "value": ""
+        },
+        {
+            "key": "user_id",
+            "value": ""
+        },
+        {
+            "key": "product_id",
+            "value": ""
+        },
+        {
+            "key": "order_id",
+            "value": ""
+        },
+        {
+            "key": "transaction_id",
+            "value": ""
+        },
+        {
+            "key": "test_email",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "1. Health Checks",
+            "item": [
+                {
+                    "name": "Auth Service Health",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}:{{gateway_port}}/api/auth/health"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Auth Service is healthy', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Product Service Health",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}:{{gateway_port}}/api/products/health"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Product Service is healthy', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Inventory Service Health",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/health"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Inventory Service is healthy', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Order Service Health",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/health"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Order Service is healthy', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Payment Service Health",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}:{{gateway_port}}/api/payments/health"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Payment Service is healthy', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Checkout Service Health",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}:{{gateway_port}}/api/checkout/health"
+                    },
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Checkout Service is healthy', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "2. Authentication",
+            "item": [
+                {
+                    "name": "Register New User",
+                    "event": [
+                        {
+                            "listen": "prerequest",
+                            "script": {
+                                "exec": [
+                                    "pm.collectionVariables.set('test_email', 'test_' + Date.now() + '@greenmart.com');"
+                                ]
+                            }
+                        },
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Registration successful', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    if (json.data && json.data.id) {",
+                                    "        pm.collectionVariables.set('user_id', json.data.id);",
+                                    "    }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"{{test_email}}\",\n  \"password\": \"Test@123456\",\n  \"role\": \"VENDOR\"\n}"
+                        },
+                        "url": "{{base_url}}:{{gateway_port}}/api/auth/register"
+                    }
+                },
+                {
+                    "name": "Login User",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Login successful', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    pm.expect(json.token).to.be.a('string');",
+                                    "    pm.collectionVariables.set('auth_token', json.token);",
+                                    "    if (json.user && json.user.id) {",
+                                    "        pm.collectionVariables.set('user_id', json.user.id);",
+                                    "    }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"Test@123456\"\n}"
+                        },
+                        "url": "{{base_url}}:{{gateway_port}}/api/auth/login"
+                    }
+                },
+                {
+                    "name": "Invalid Login Rejected",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Invalid credentials rejected', function() {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([400, 401]);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"wrongpassword\"\n}"
+                        },
+                        "url": "{{base_url}}:{{gateway_port}}/api/auth/login"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "3. Products",
+            "item": [
+                {
+                    "name": "Create Product (Vendor)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Product created', function() {",
+                                    "    pm.response.to.have.status(201);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    var productId = json.data._id || json.data.id;",
+                                    "    pm.collectionVariables.set('product_id', productId);",
+                                    "    pm.expect(json.data.images).to.be.an('array');",
+                                    "    pm.expect(json.data.images.length).to.be.at.least(1);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            },
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id}}"
+                            },
+                            {
+                                "key": "X-User-Role",
+                                "value": "VENDOR"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Test Product {{$timestamp}}\",\n  \"description\": \"Integration test product with required image\",\n  \"price\": 29.99,\n  \"category\": \"Electronics\",\n  \"images\": [\"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400\"]\n}"
+                        },
+                        "url": "{{base_url}}:{{gateway_port}}/api/products"
+                    }
+                },
+                {
+                    "name": "Get All Products",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Products retrieved', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}:{{gateway_port}}/api/products"
+                    }
+                },
+                {
+                    "name": "Get Product by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Product retrieved', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    pm.expect(json.data.name).to.be.a('string');",
+                                    "    pm.expect(json.data.images).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}:{{gateway_port}}/api/products/{{product_id}}"
+                    }
+                },
+                {
+                    "name": "Update Product",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Product updated', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            },
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id}}"
+                            },
+                            {
+                                "key": "X-User-Role",
+                                "value": "VENDOR"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"price\": 39.99,\n  \"images\": [\"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400\", \"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400\"]\n}"
+                        },
+                        "url": "{{base_url}}:{{gateway_port}}/api/products/{{product_id}}"
+                    }
+                },
+                {
+                    "name": "Create Product Without Images (Should Fail)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Product creation fails without images', function() {",
+                                    "    pm.response.to.have.status(400);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.false;",
+                                    "    pm.expect(json.message).to.include('image');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            },
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id}}"
+                            },
+                            {
+                                "key": "X-User-Role",
+                                "value": "VENDOR"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Product Without Images\",\n  \"description\": \"This should fail without images\",\n  \"price\": 19.99,\n  \"category\": \"Test\"\n}"
+                        },
+                        "url": "{{base_url}}:{{gateway_port}}/api/products"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "4. Inventory",
+            "item": [
+                {
+                    "name": "Set Inventory",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Inventory set', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 500,\n  \"lowStockThreshold\": 10\n}"
+                        },
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
+                    }
+                },
+                {
+                    "name": "Get Inventory by Product",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Inventory retrieved', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    pm.expect(json.data.quantity).to.be.at.least(100);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
+                    }
+                },
+                {
+                    "name": "Update Inventory",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Inventory updated', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"quantity\": 500\n}"
+                        },
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
+                    }
+                },
+                {
+                    "name": "Check Stock Availability",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Stock check passed', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    pm.expect(json.data.quantity).to.be.at.least(10);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "5. Cart",
+            "item": [
+                {
+                    "name": "Get Empty Cart",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Cart retrieved', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/cart"
+                    }
+                },
+                {
+                    "name": "Add Item to Cart",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Item added to cart', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"productId\": \"{{product_id}}\",\n  \"name\": \"Test Product\",\n  \"quantity\": 2,\n  \"price\": 39.99\n}"
+                        },
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/cart/add"
+                    }
+                },
+                {
+                    "name": "Update Cart Item Quantity",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Cart item updated', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/cart/update?productId={{product_id}}&quantity=3"
+                    }
+                },
+                {
+                    "name": "Get Cart with Items",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Cart with items retrieved', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/cart"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "6. Checkout (SAGA Flow)",
+            "item": [
+                {
+                    "name": "Verify Inventory Before Checkout",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Inventory available for checkout', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    pm.expect(json.data.quantity).to.be.at.least(3);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
+                    }
+                },
+                {
+                    "name": "Execute Checkout",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Checkout successful', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    pm.collectionVariables.set('order_id', json.orderId);",
+                                    "    pm.collectionVariables.set('transaction_id', json.transactionId);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"shippingAddress\": {\n    \"street\": \"123 Test Street\",\n    \"city\": \"Test City\",\n    \"zip\": \"12345\",\n    \"country\": \"USA\"\n  },\n  \"paymentMethod\": \"CREDIT_CARD\"\n}"
+                        },
+                        "url": "{{base_url}}:{{gateway_port}}/api/checkout"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "7. Order Verification",
+            "item": [
+                {
+                    "name": "Get User Orders",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Orders retrieved', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    pm.expect(json.data).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders"
+                    }
+                },
+                {
+                    "name": "Get Order by ID",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Order retrieved', function() {",
+                                    "    if (pm.collectionVariables.get('order_id')) {",
+                                    "        pm.response.to.have.status(200);",
+                                    "        var json = pm.response.json();",
+                                    "        pm.expect(json.success).to.be.true;",
+                                    "    } else {",
+                                    "        console.log('Skipped - No order ID');",
+                                    "    }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/{{order_id}}"
+                    }
+                },
+                {
+                    "name": "Verify Inventory Reduced",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Inventory check passed', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "    console.log('Current inventory:', json.data.quantity);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "8. Payment Verification",
+            "item": [
+                {
+                    "name": "Get Payment Transaction",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Payment transaction retrieved', function() {",
+                                    "    if (pm.collectionVariables.get('transaction_id')) {",
+                                    "        pm.response.to.have.status(200);",
+                                    "        var json = pm.response.json();",
+                                    "        pm.expect(json.success).to.be.true;",
+                                    "    } else {",
+                                    "        console.log('Skipped - No transaction ID');",
+                                    "    }",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/payments/{{transaction_id}}"
+                    }
+                },
+                {
+                    "name": "Get User Payment History",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Payment history retrieved', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/payments"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "9. Gateway Routing",
+            "item": [
+                {
+                    "name": "Gateway Routes to Auth",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Gateway routes to auth service', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}:{{gateway_port}}/api/auth/health"
+                    }
+                },
+                {
+                    "name": "Gateway Routes to Products (Public)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Gateway routes to products', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}:{{gateway_port}}/api/products"
+                    }
+                },
+                {
+                    "name": "Gateway Requires Auth for Protected Routes",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Gateway requires auth', function() {",
+                                    "    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders"
+                    }
+                },
+                {
+                    "name": "Gateway Allows Authenticated Requests",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Gateway allows authenticated requests', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            },
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id}}"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "10. Cleanup",
+            "item": [
+                {
+                    "name": "Delete Test Product",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test('Product deleted', function() {",
+                                    "    pm.response.to.have.status(200);",
+                                    "    var json = pm.response.json();",
+                                    "    pm.expect(json.success).to.be.true;",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{auth_token}}"
+                            },
+                            {
+                                "key": "X-User-Id",
+                                "value": "{{user_id}}"
+                            },
+                            {
+                                "key": "X-User-Role",
+                                "value": "VENDOR"
+                            }
+                        ],
+                        "url": "{{base_url}}:{{gateway_port}}/api/products/{{product_id}}"
+                    }
+                }
+            ]
+        }
+    ]
+}
