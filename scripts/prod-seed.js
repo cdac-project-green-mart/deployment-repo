@@ -15,6 +15,9 @@
  *   node scripts/prod-seed.js
  */
 
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
 const axios = require('axios');
 
 // Configuration - update for your environment
