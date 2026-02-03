@@ -7,7 +7,7 @@
     "variable": [
         {
             "key": "base_url",
-            "value": "http://localhost"
+            "value": "http://68.183.86.246"
         },
         {
             "key": "auth_port",
@@ -70,7 +70,7 @@
                     "name": "Auth Service Health",
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{auth_port}}/api/auth/health"
+                        "url": "{{base_url}}:{{gateway_port}}/api/auth/health"
                     },
                     "event": [
                         {
@@ -89,7 +89,7 @@
                     "name": "Product Service Health",
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{product_port}}/health"
+                        "url": "{{base_url}}:{{gateway_port}}/api/products/health"
                     },
                     "event": [
                         {
@@ -108,7 +108,7 @@
                     "name": "Inventory Service Health",
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{inventory_port}}/health"
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/health"
                     },
                     "event": [
                         {
@@ -127,7 +127,7 @@
                     "name": "Order Service Health",
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{order_port}}/health"
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/health"
                     },
                     "event": [
                         {
@@ -146,7 +146,7 @@
                     "name": "Payment Service Health",
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{payment_port}}/health"
+                        "url": "{{base_url}}:{{gateway_port}}/api/payments/health"
                     },
                     "event": [
                         {
@@ -165,7 +165,7 @@
                     "name": "Checkout Service Health",
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{checkout_port}}/api/checkout/health"
+                        "url": "{{base_url}}:{{gateway_port}}/api/checkout/health"
                     },
                     "event": [
                         {
@@ -224,7 +224,7 @@
                             "mode": "raw",
                             "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"{{test_email}}\",\n  \"password\": \"Test@123456\",\n  \"role\": \"VENDOR\"\n}"
                         },
-                        "url": "{{base_url}}:{{auth_port}}/api/auth/register"
+                        "url": "{{base_url}}:{{gateway_port}}/api/auth/register"
                     }
                 },
                 {
@@ -260,7 +260,7 @@
                             "mode": "raw",
                             "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"Test@123456\"\n}"
                         },
-                        "url": "{{base_url}}:{{auth_port}}/api/auth/login"
+                        "url": "{{base_url}}:{{gateway_port}}/api/auth/login"
                     }
                 },
                 {
@@ -289,7 +289,7 @@
                             "mode": "raw",
                             "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"wrongpassword\"\n}"
                         },
-                        "url": "{{base_url}}:{{auth_port}}/api/auth/login"
+                        "url": "{{base_url}}:{{gateway_port}}/api/auth/login"
                     }
                 }
             ]
@@ -341,7 +341,7 @@
                             "mode": "raw",
                             "raw": "{\n  \"name\": \"Test Product {{$timestamp}}\",\n  \"description\": \"Integration test product with required image\",\n  \"price\": 29.99,\n  \"category\": \"Electronics\",\n  \"images\": [\"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400\"]\n}"
                         },
-                        "url": "{{base_url}}:{{product_port}}/api/products"
+                        "url": "{{base_url}}:{{gateway_port}}/api/products"
                     }
                 },
                 {
@@ -362,7 +362,7 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{product_port}}/api/products"
+                        "url": "{{base_url}}:{{gateway_port}}/api/products"
                     }
                 },
                 {
@@ -385,7 +385,7 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{product_port}}/api/products/{{product_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/products/{{product_id}}"
                     }
                 },
                 {
@@ -428,7 +428,7 @@
                             "mode": "raw",
                             "raw": "{\n  \"price\": 39.99,\n  \"images\": [\"https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400\", \"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400\"]\n}"
                         },
-                        "url": "{{base_url}}:{{product_port}}/api/products/{{product_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/products/{{product_id}}"
                     }
                 },
                 {
@@ -472,7 +472,7 @@
                             "mode": "raw",
                             "raw": "{\n  \"name\": \"Product Without Images\",\n  \"description\": \"This should fail without images\",\n  \"price\": 19.99,\n  \"category\": \"Test\"\n}"
                         },
-                        "url": "{{base_url}}:{{product_port}}/api/products"
+                        "url": "{{base_url}}:{{gateway_port}}/api/products"
                     }
                 }
             ]
@@ -512,7 +512,7 @@
                             "mode": "raw",
                             "raw": "{\n  \"quantity\": 500,\n  \"lowStockThreshold\": 10\n}"
                         },
-                        "url": "{{base_url}}:{{inventory_port}}/api/inventory/{{product_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
                     }
                 },
                 {
@@ -534,7 +534,7 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{inventory_port}}/api/inventory/{{product_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
                     }
                 },
                 {
@@ -569,7 +569,7 @@
                             "mode": "raw",
                             "raw": "{\n  \"quantity\": 500\n}"
                         },
-                        "url": "{{base_url}}:{{inventory_port}}/api/inventory/{{product_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
                     }
                 },
                 {
@@ -591,7 +591,7 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{inventory_port}}/api/inventory/{{product_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
                     }
                 }
             ]
@@ -623,7 +623,7 @@
                                 "value": "{{user_id}}"
                             }
                         ],
-                        "url": "{{base_url}}:{{order_port}}/api/orders/cart"
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/cart"
                     }
                 },
                 {
@@ -658,7 +658,7 @@
                             "mode": "raw",
                             "raw": "{\n  \"productId\": \"{{product_id}}\",\n  \"name\": \"Test Product\",\n  \"quantity\": 2,\n  \"price\": 39.99\n}"
                         },
-                        "url": "{{base_url}}:{{order_port}}/api/orders/cart/add"
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/cart/add"
                     }
                 },
                 {
@@ -685,7 +685,7 @@
                                 "value": "{{user_id}}"
                             }
                         ],
-                        "url": "{{base_url}}:{{order_port}}/api/orders/cart/update?productId={{product_id}}&quantity=3"
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/cart/update?productId={{product_id}}&quantity=3"
                     }
                 },
                 {
@@ -712,7 +712,7 @@
                                 "value": "{{user_id}}"
                             }
                         ],
-                        "url": "{{base_url}}:{{order_port}}/api/orders/cart"
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/cart"
                     }
                 }
             ]
@@ -739,7 +739,7 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{inventory_port}}/api/inventory/{{product_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
                     }
                 },
                 {
@@ -780,7 +780,7 @@
                             "mode": "raw",
                             "raw": "{\n  \"shippingAddress\": {\n    \"street\": \"123 Test Street\",\n    \"city\": \"Test City\",\n    \"zip\": \"12345\",\n    \"country\": \"USA\"\n  },\n  \"paymentMethod\": \"CREDIT_CARD\"\n}"
                         },
-                        "url": "{{base_url}}:{{checkout_port}}/api/checkout"
+                        "url": "{{base_url}}:{{gateway_port}}/api/checkout"
                     }
                 }
             ]
@@ -813,7 +813,7 @@
                                 "value": "{{user_id}}"
                             }
                         ],
-                        "url": "{{base_url}}:{{order_port}}/api/orders"
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders"
                     }
                 },
                 {
@@ -844,7 +844,7 @@
                                 "value": "{{user_id}}"
                             }
                         ],
-                        "url": "{{base_url}}:{{order_port}}/api/orders/{{order_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/orders/{{order_id}}"
                     }
                 },
                 {
@@ -866,7 +866,7 @@
                     ],
                     "request": {
                         "method": "GET",
-                        "url": "{{base_url}}:{{inventory_port}}/api/inventory/{{product_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/inventory/{{product_id}}"
                     }
                 }
             ]
@@ -902,7 +902,7 @@
                                 "value": "{{user_id}}"
                             }
                         ],
-                        "url": "{{base_url}}:{{payment_port}}/api/payments/{{transaction_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/payments/{{transaction_id}}"
                     }
                 },
                 {
@@ -929,7 +929,7 @@
                                 "value": "{{user_id}}"
                             }
                         ],
-                        "url": "{{base_url}}:{{payment_port}}/api/payments"
+                        "url": "{{base_url}}:{{gateway_port}}/api/payments"
                     }
                 }
             ]
@@ -1070,7 +1070,7 @@
                                 "value": "VENDOR"
                             }
                         ],
-                        "url": "{{base_url}}:{{product_port}}/api/products/{{product_id}}"
+                        "url": "{{base_url}}:{{gateway_port}}/api/products/{{product_id}}"
                     }
                 }
             ]
