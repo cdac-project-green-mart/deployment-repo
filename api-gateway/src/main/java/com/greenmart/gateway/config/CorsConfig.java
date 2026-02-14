@@ -15,9 +15,10 @@ public class CorsConfig {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-            "http://localhost:3000",
-            "http://localhost:5173"
-        ));
+                "http://localhost:3000",
+                "http://localhost:5173",
+                "https://amsbuilds.in",
+                "http://amsbuilds.in"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
