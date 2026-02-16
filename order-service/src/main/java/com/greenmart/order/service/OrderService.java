@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +19,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
+    private final EventPublisherService eventPublisherService;
 
     @Transactional(readOnly = true)
     public List<Order> getUserOrders(String userId) {
@@ -98,6 +98,11 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         order.setStatus(status);
-        return orderRepository.save(order);
+        Order updatedOrder = orderRepository.save(order);
+
+        // Publish order status change event
+        eventPublisherService.publishOrderStatusChange(orderId, order.getUserId(), status);
+
+        return updatedOrder;
     }
 }

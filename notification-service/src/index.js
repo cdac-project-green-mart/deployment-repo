@@ -3,14 +3,16 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const mongoose = require('mongoose');
 const eurekaClient = require('./config/eureka');
 const rabbitmqClient = require('./config/rabbitmq');
-const inventoryRoutes = require('./routes/inventoryRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
+// Import consumers
+const { startLowStockConsumer } = require('./consumers/lowStockConsumer');
+const { startOrderStatusConsumer } = require('./consumers/orderStatusConsumer');
+
 const app = express();
-const PORT = process.env.PORT || 8086;
+const PORT = process.env.PORT || 8089;
 
 // Middleware
 app.use(helmet());
@@ -18,28 +20,33 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
-// Routes
-app.use('/api/inventory', inventoryRoutes);
-
-// Health check
+// Health check endpoints
 app.get('/actuator/health', (req, res) => {
     res.json({ status: 'UP' });
 });
 
 app.get('/health', (req, res) => {
-    res.json({ status: 'Inventory Service is running' });
+    res.json({ status: 'Notification Service is running' });
 });
 
 // Error handler
 app.use(errorHandler);
 
-// Connect to MongoDB and start server
-mongoose.connect(process.env.MONGODB_URI)
-    .then(() => {
-        console.log('Connected to MongoDB');
+// Start server and services
+async function startServices() {
+    try {
+        // Connect to RabbitMQ
+        await rabbitmqClient.connect();
+        console.log('RabbitMQ connection established');
 
+        // Start consumers
+        await startLowStockConsumer();
+        await startOrderStatusConsumer();
+        console.log('RabbitMQ consumers started');
+
+        // Start Express server
         app.listen(PORT, () => {
-            console.log(`Inventory Service running on port ${PORT}`);
+            console.log(`Notification Service running on port ${PORT}`);
 
             // Register with Eureka
             if (process.env.NODE_ENV !== 'test') {
@@ -50,25 +57,23 @@ mongoose.connect(process.env.MONGODB_URI)
                         console.log('Registered with Eureka');
                     }
                 });
-
-                // Connect to RabbitMQ
-                rabbitmqClient.connect().catch(err => {
-                    console.error('RabbitMQ connection failed:', err.message);
-                });
             }
         });
-    })
-    .catch((error) => {
-        console.error('MongoDB connection error:', error);
+    } catch (error) {
+        console.error('Failed to start services:', error);
         process.exit(1);
-    });
+    }
+}
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
+    console.log('Shutting down gracefully...');
     eurekaClient.stop();
     await rabbitmqClient.closeConnection();
-    mongoose.connection.close();
     process.exit(0);
 });
+
+// Start the services
+startServices();
 
 module.exports = app;

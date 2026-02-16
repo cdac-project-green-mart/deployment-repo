@@ -79,4 +79,24 @@ public class AuthService {
 
         return ApiResponse.success(UserResponse.fromEntity(user));
     }
+
+    // === Internal methods for notification service ===
+
+    public java.util.List<java.util.Map<String, String>> getUsersByRole(String role) {
+        User.Role userRole = User.Role.valueOf(role.toUpperCase());
+        var users = userRepository.findByRole(userRole);
+        return users.stream()
+                .map(u -> java.util.Map.of(
+                        "id", u.getId().toString(),
+                        "email", u.getEmail(),
+                        "name", u.getName()
+                ))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    public String getUserEmailById(java.util.UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        return user.getEmail();
+    }
 }

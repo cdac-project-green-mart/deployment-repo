@@ -1,4 +1,5 @@
 const Inventory = require('../models/Inventory');
+const { publishLowStockAlert } = require('./messagePublisher');
 
 class InventoryService {
     // Get inventory for a product
@@ -59,6 +60,10 @@ class InventoryService {
         }
 
         await inventory.save();
+
+        // Check and publish low-stock alert
+        await this.checkAndPublishLowStock(inventory);
+
         return inventory;
     }
 
@@ -72,6 +77,9 @@ class InventoryService {
 
         inventory.quantity += quantity;
         await inventory.save();
+
+        // Check and publish low-stock alert
+        await this.checkAndPublishLowStock(inventory);
 
         return inventory;
     }
@@ -92,6 +100,9 @@ class InventoryService {
 
         inventory.quantity -= quantity;
         await inventory.save();
+
+        // Check and publish low-stock alert
+        await this.checkAndPublishLowStock(inventory);
 
         return inventory;
     }
@@ -142,6 +153,9 @@ class InventoryService {
         inventory.quantity = Math.max(0, inventory.quantity - quantity);
         await inventory.save();
 
+        // Check and publish low-stock alert
+        await this.checkAndPublishLowStock(inventory);
+
         return inventory;
     }
 
@@ -173,6 +187,23 @@ class InventoryService {
     async deleteInventory(productId) {
         const result = await Inventory.deleteOne({ productId });
         return result.deletedCount > 0;
+    }
+
+    // Helper method to check and publish low-stock alerts
+    async checkAndPublishLowStock(inventory) {
+        try {
+            // Check if stock is low using the virtual `isLowStock` property
+            if (inventory.quantity <= inventory.lowStockThreshold) {
+                await publishLowStockAlert(
+                    inventory.productId,
+                    inventory.quantity,
+                    inventory.lowStockThreshold
+                );
+            }
+        } catch (error) {
+            // Log error but don't fail the operation
+            console.error('Failed to publish low-stock alert:', error.message);
+        }
     }
 }
 

@@ -203,10 +203,16 @@ services:
       - MONGODB_URI=mongodb://greenmart:greenmart123@mongodb:27017/inventory_service?authSource=admin
       - EUREKA_HOST=eureka-server
       - EUREKA_PORT=8761
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=greenmart
+      - RABBITMQ_PASSWORD=greenmart123
     depends_on:
       mongodb:
         condition: service_healthy
       eureka-server:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - green-mart-network
@@ -231,10 +237,16 @@ services:
       - DB_USER=greenmart
       - DB_PASSWORD=greenmart123
       - EUREKA_SERVER=http://eureka-server:8761/eureka/
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=greenmart
+      - RABBITMQ_PASSWORD=greenmart123
     depends_on:
       postgres:
         condition: service_healthy
       eureka-server:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     networks:
       - green-mart-network
@@ -321,9 +333,66 @@ services:
       timeout: 10s
       retries: 5
 
+  # RabbitMQ Message Broker
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: green-mart-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: greenmart
+      RABBITMQ_DEFAULT_PASS: greenmart123
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - green-mart-network
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Notification Service (Node.js)
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: green-mart-notification
+    ports:
+      - "8089:8089"
+    environment:
+      - PORT=8089
+      - EUREKA_HOST=eureka-server
+      - EUREKA_PORT=8761
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=greenmart
+      - RABBITMQ_PASSWORD=greenmart123
+      - AUTH_SERVICE_URL=http://auth-service:8082
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_EMAIL=${SMTP_EMAIL:-your-email@gmail.com}
+      - SMTP_APP_PASSWORD=${SMTP_APP_PASSWORD:-your-app-password}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+    networks:
+      - green-mart-network
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8089/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 volumes:
   postgres_data:
   mongodb_data:
+  rabbitmq_data:
 
 
 networks:

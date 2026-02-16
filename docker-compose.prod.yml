@@ -445,6 +445,88 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  # ===========================================
+  # MESSAGE BROKER
+  # ===========================================
+
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: green-mart-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - green-mart-network
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ===========================================
+  # NOTIFICATION SERVICE
+  # ===========================================
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: green-mart-notification
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT:-8089}:8089"
+    environment:
+      - PORT=8089
+      - EUREKA_HOST=eureka-server
+      - EUREKA_PORT=8761
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - AUTH_SERVICE_URL=http://auth-service:8082
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_EMAIL=${SMTP_EMAIL}
+      - SMTP_APP_PASSWORD=${SMTP_APP_PASSWORD}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_healthy
+    networks:
+      - green-mart-network
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8089/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 # ===========================================
 # VOLUMES (Data persists across restarts)
 # ===========================================
@@ -453,6 +535,8 @@ volumes:
     name: green-mart-postgres-data
   mongodb_data:
     name: green-mart-mongodb-data
+  rabbitmq_data:
+    name: green-mart-rabbitmq-data
 
 # ===========================================
 # NETWORKS

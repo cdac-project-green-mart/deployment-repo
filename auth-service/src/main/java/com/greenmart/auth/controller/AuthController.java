@@ -55,4 +55,30 @@ public class AuthController {
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("Auth Service is running");
     }
+
+    // === Internal endpoints for notification service ===
+
+    @GetMapping("/users/by-role")
+    public ResponseEntity<?> getUsersByRole(@RequestParam String role) {
+        log.info("Fetching users with role: {}", role);
+        try {
+            var users = authService.getUsersByRole(role);
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            log.error("Error fetching users by role: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/users/{userId}/email")
+    public ResponseEntity<?> getUserEmail(@PathVariable java.util.UUID userId) {
+        log.info("Fetching email for userId: {}", userId);
+        try {
+            var email = authService.getUserEmailById(userId);
+            return ResponseEntity.ok(java.util.Map.of("email", email));
+        } catch (Exception e) {
+            log.error("Error fetching email for userId {}: {}", userId, e.getMessage());
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
